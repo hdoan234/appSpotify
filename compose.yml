@@ -11,7 +11,7 @@ services:
         command: npm install
       - path: backend/
         action: sync
-        target: /app/backend
+        target: home/node/app
   frontend:
     build: frontend
     ports:
@@ -22,7 +22,7 @@ services:
         command: npm install
       - path: frontend/
         action: sync
-        target: /app/frontend
+        target: home/node/frontend
 
 networks:
   backend:
