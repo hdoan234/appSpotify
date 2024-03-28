@@ -5,10 +5,24 @@ services:
       - backend
     ports:
       - "3000:3000"
+    develop:
+      watch:
+      - path: backend/package.json
+        command: npm install
+      - path: backend/
+        action: sync
+        target: /app/backend
   frontend:
     build: frontend
     ports:
       - "8081:8081"
+    develop:
+      watch:
+      - path: backend/package.json
+        command: npm install
+      - path: frontend/
+        action: sync
+        target: /app/frontend
 
 networks:
   backend:
