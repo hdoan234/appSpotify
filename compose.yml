@@ -4,7 +4,7 @@ services:
     networks:
       - backend
     ports:
-      - "3000:3000"
+      - 3000:3000
     develop:
       watch:
       - path: backend/package.json
@@ -13,14 +13,14 @@ services:
         action: sync
         target: home/node/app
   frontend:
-    build: frontend
+    build: spotifindr
     ports:
-      - "8081:8081"
+      - 8100:8100
     develop:
       watch:
-      - path: backend/package.json
+      - path: spotifindr/package.json
         command: npm install
-      - path: frontend/
+      - path: spotifindr/
         action: sync
         target: home/node/frontend
 

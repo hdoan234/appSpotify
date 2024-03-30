@@ -8,6 +8,8 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8081
+RUN npm install -g @ionic/cli
 
-CMD ["npm", "run", "web"]
+EXPOSE 8100
+
+CMD ["ionic", "serve", "--host=0.0.0.0"]
