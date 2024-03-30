@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Reddit+Mono:wght@200..900&family=Yarndings+20&display=swap');
+
+
+.container {
+    --background: linear-gradient(164deg, rgba(0,0,0,1) 18%,rgba(109,251,165,1) 100%);
+    position: relative;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+
+.header{
+    font-size: 58px;
+    background: -webkit-linear-gradient(-40deg,#65ffaa 50%, #08883A 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+    font-family: "Lato", "Comic Sans";
+    letter-spacing: -2px;
+}
+
+.form-container {
+    z-index: 2;
+    height: 75vh;
+    text-align: center;
+    margin: 8vh 10vw 0 10vw;
+    padding-top: 30%;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    backdrop-filter: blur(11px);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 75px;
+}
+
+
+.input-field:placeholder {
+    font-size:8px;
+}
+
+.input-field {
+    all: unset;
+    height: 40px;
+    margin: 10px;
+    background-color: #DCFAE9 ;
+    border-radius: 10px;
+    text-align: left;
+    color: black;
+}
+a, a:active, a:visited, a:link {
+    text-decoration: none;
+    font-size: 15px;
+    color: #005e24;
+    transition: text-shadow ease-in-out 0.5s;
+}
+a:hover{
+    color: rgb(0, 46, 10);
+    text-shadow: #78ffb0 0 0 6px;
+}
+input[type="submit"]{
+    all:unset;
+    height:40px;
+    width: 80px;
+    margin: 30px auto; 
+    font-family: "reddit mono", "Arial";
+    background-color: #08883A;
+    border-radius: 10px;
+    transition: background-color ease-in-out 0.2s;
+}
+input[type="submit"]:hover{
+    background-color: #075726;
+}
+.input-container{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color:#DCFAE9;
+    border-radius: 10px;
+    width: 80%;
+    margin: 10px auto;
+}
+
+ion-icon {
+    color: black;
+}
+
+.circle {
+    z-index: -1;
+    position: absolute;
+    height: 50%;
+    width: 100%;
+    border-radius: 50%;
+}
+.cir1 {
+    background-size: cover;
+    background-position: center center;
+    background-repeat: repeat;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 1000 1000%22 xmlns=%22http:%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3ClinearGradient id=%22b%22 gradientTransform=%22rotate(105 .5 .5)%22%3E%3Cstop offset=%220%25%22 stop-color=%22%23d1ff79%22%2F%3E%3Cstop offset=%22100%25%22 stop-color=%22%232AF598%22%2F%3E%3C%2FlinearGradient%3E%3CclipPath id=%22a%22%3E%3Cpath fill=%22currentColor%22 d=%22M831.5 669.5q7.5 169.5-162 172T387 785q-113-59-240.5-172T123 363.5Q227 227 363.5 143t298-25q161.5 59 162 220.5t8 331Z%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3Cg clip-path=%22url(%23a)%22%3E%3Cpath fill=%22url(%23b)%22 d=%22M831.5 669.5q7.5 169.5-162 172T387 785q-113-59-240.5-172T123 363.5Q227 227 363.5 143t298-25q161.5 59 162 220.5t8 331Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+    transform: translate(30vw, 40vh) rotate(120deg);
+}
+
+.cir3 {
+    
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: repeat;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg viewBox=%220 0 1000 1000%22 xmlns=%22http:%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3ClinearGradient id=%22b%22 gradientTransform=%22rotate(255 .5 .5)%22%3E%3Cstop offset=%220%25%22 stop-color=%22%2308AEEA%22%2F%3E%3Cstop offset=%22100%25%22 stop-color=%22%232AF598%22%2F%3E%3C%2FlinearGradient%3E%3CclipPath id=%22a%22%3E%3Cpath fill=%22currentColor%22 d=%22M802 659.5q17 159.5-142.5 225t-304-15Q211 789 141 644.5T178.5 393Q286 286 393 183t265.5-51.5Q817 183 801 341.5t1 318Z%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3Cg clip-path=%22url(%23a)%22%3E%3Cpath fill=%22url(%23b)%22 d=%22M802 659.5q17 159.5-142.5 225t-304-15Q211 789 141 644.5T178.5 393Q286 286 393 183t265.5-51.5Q817 183 801 341.5t1 318Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+      
+    transform: translate(-60vw, -45vh);
+}
+  
+#changeState{
+    text-align: center;
+    margin: 40px;
+    padding-top: 50px;
+    border-top: solid #84f0b363;
+}

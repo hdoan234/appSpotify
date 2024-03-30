@@ -19,7 +19,7 @@ services:
     develop:
       watch:
       - path: spotifindr/package.json
-        command: npm install
+        action: rebuild
       - path: spotifindr/
         action: sync
         target: home/node/frontend
