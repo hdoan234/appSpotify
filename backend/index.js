@@ -44,7 +44,7 @@ app.get('/api/getAuth', async (req, res) => {
 
   const { verifier, spotURL } = await redirectToAuth()
 
-  res.cookie('verifier', verifier, { httpOnly: true, maxAge: 1000 * 60 * 15 })
+  res.cookie('verifier', verifier, { httpOnly: true })
 
   res.send({
     ok: true,
@@ -61,8 +61,8 @@ app.get("/callback", async (req, res) => {
 
   res.cookie('spot_access_token', access_token, { 
     httpOnly: true,
-    maxAge: 1000 * 60 * 60
   })
+  
   res.redirect("http://localhost:8100/")
 })
 

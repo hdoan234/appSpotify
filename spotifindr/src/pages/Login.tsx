@@ -14,7 +14,6 @@ const Page: React.FC = () => {
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
-
     const handleSubmit = async (e : any) : Promise<void> => {
         e.preventDefault()
 
@@ -39,6 +38,7 @@ const Page: React.FC = () => {
         console.log(response.data)
         if (!response.data.ok) {
             alert(response.data.message)
+            document.location = "/home"
             return
         }
 
