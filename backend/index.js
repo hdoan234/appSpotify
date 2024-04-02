@@ -62,8 +62,29 @@ app.get("/callback", async (req, res) => {
   res.cookie('spot_access_token', access_token, { 
     httpOnly: true,
   })
-  
+
   res.redirect("http://localhost:8100/")
+})
+
+app.get('/api/playing', async (req, res) => {
+  if (!isAuthenticated(req)) {
+    res.status(401).send({
+      "ok": false,
+      "message": "Not authenticated"
+    })
+    return
+  }
+
+  const response = await axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
+    headers: {
+      'Authorization': `Bearer ${req.cookies.spot_access_token}`
+    }
+  })
+
+  res.send({
+    "ok": true,
+    "data": response.data
+  })
 })
 
 app.get('/api/profile', async (req, res) => {

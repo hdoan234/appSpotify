@@ -29,7 +29,8 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^5.3.4",
+    "usehooks-ts": "^3.0.2"
   },
   "devDependencies": {
     "@capacitor/cli": "5.7.4",

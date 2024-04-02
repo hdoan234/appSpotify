@@ -1,5 +1,6 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react"
+import { useInterval } from 'usehooks-ts';
 
 import axios from 'axios';
 
@@ -65,7 +66,23 @@ class UserDataProps {
 }
 
 const Home: React.FC = () => {
-    const [userData, setUserData] = useState(new UserDataProps())
+    const [userData, setUserData] = useState<UserDataProps>(new UserDataProps())
+    const [delay, setDelay] = useState<number>(1000)
+    const [currentPlaying, setCurrentPlaying] = useState<any>({})
+
+    useInterval(() => {
+        axios.get("http://localhost:3000/api/playing", {
+            withCredentials: true,
+        }).then(response => {
+            if (!response.data.data && response.data.ok) {
+                setDelay(10000)
+            } else {
+                setDelay(1000)
+                setCurrentPlaying(response.data.data)
+                console.log(currentPlaying)
+            }
+        })
+    }, delay)
 
     useEffect(() => {
         axios.get("http://localhost:3000/api/profile", {
@@ -97,9 +114,15 @@ const Home: React.FC = () => {
             </IonHeader>
 
             <IonContent fullscreen>
+                {/* TODO: Add styling to these dynamic fields */}
                 <div>Name: { userData.display_name }</div>
                 <img src={userData.images[0]?.url} alt="avatar" />
                 <div>Country: { userData.country }</div>
+                <div>Followers: { userData.followers.total }</div>
+                <div>Spotify Profile: <a href={userData.uri}>{ userData.uri }</a></div>
+            
+                <div>Current Playing: { currentPlaying.item?.name }</div>
+                <input type="range" min="1" max="100" value={ (parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed() }></input>
             </IonContent>
         </IonPage>
     )
