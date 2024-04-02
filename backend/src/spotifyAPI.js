@@ -35,7 +35,6 @@ export async function generateCodeChallenge(codeVerifier) {
     const hash = await crypto.createHash("sha256");
     hash.update(data)
     const digest = await hash.digest();
-    console.log(digest)
     return btoa(String.fromCharCode.apply(null, [...new Uint8Array(digest)]))
         .replace(/\+/g, '-')
         .replace(/\//g, '_')

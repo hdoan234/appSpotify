@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser';
 
 import { redirectToAuth, getAccessToken } from "./src/spotifyAPI.js"
 
+
+
 const app = express();
 
 app.use(cors({
@@ -18,6 +20,10 @@ app.use(cors({
 app.use(cookieParser());
 app.use(bodyParser.json())
 
+const isAuthenticated = (req) => {
+  return Boolean(req.cookies.spot_access_token)
+}
+
 app.post('/', (req, res) => {
   const data = req.body
   console.log(data)
@@ -27,19 +33,23 @@ app.post('/', (req, res) => {
 });
 
 app.get('/api/getAuth', async (req, res) => {
-  
-  if (req.cookies.access_token) {
+
+  if (isAuthenticated(req)) {
     res.send({
-      "message": "Already logged in",
+      "ok": false,
+      "message": "Already authenticated"
     })
     return
   }
 
-  const auth = await redirectToAuth()
+  const { verifier, spotURL } = await redirectToAuth()
 
-  res.cookie('verifier', auth.verifier, { httpOnly: true, maxAge: 1000 * 60 * 15 })
+  res.cookie('verifier', verifier, { httpOnly: true, maxAge: 1000 * 60 * 15 })
 
-  res.send(auth)
+  res.send({
+    ok: true,
+    spotURL: spotURL
+  })
 })
 
 app.get("/callback", async (req, res) => {
@@ -57,16 +67,16 @@ app.get("/callback", async (req, res) => {
 })
 
 app.get('/api/profile', async (req, res) => {
-  if (!req.cookies.spot_access_token) {
-    res.send({
+
+  if (!isAuthenticated(req)) {
+    res.status(401).send({
       "ok": false,
-      "message": "Not logged in",
+      "message": "Not authenticated"
     })
     return
   }
 
   try {
-
     const result = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
         'Authorization': `Bearer ${req.cookies.spot_access_token}`

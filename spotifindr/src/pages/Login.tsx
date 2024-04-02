@@ -32,20 +32,17 @@ const Page: React.FC = () => {
     }
 
     const spotAuthHandler = async () : Promise<void> => {
-
-        const profileResponse = await axios.get("http://localhost:3000/api/profile", {
-            withCredentials: true
+        const response = await axios.get("http://localhost:3000/api/getAuth", {
+            withCredentials: true,
         })
 
-        if (!profileResponse.data.ok) {
-            const response = await axios.get("http://localhost:3000/api/getAuth", {
-                withCredentials: true,
-            })
-            document.location = response.data.spotURL
-        } else {
-            console.log(profileResponse.data.data)
+        console.log(response.data)
+        if (!response.data.ok) {
+            alert(response.data.message)
+            return
         }
 
+        document.location = response.data.spotURL
     }
   return (
     <IonPage>
