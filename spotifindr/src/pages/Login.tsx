@@ -33,47 +33,18 @@ const Page: React.FC = () => {
 
     const spotAuthHandler = async () : Promise<void> => {
 
-        const searchParams = new URLSearchParams(window.location.search);
-        const code = searchParams.get('code');
+        const profileResponse = await axios.get("http://localhost:3000/api/profile", {
+            withCredentials: true
+        })
 
-        if (!code) {
-            const response = await axios.get("http://localhost:3000/getAuth")
-            localStorage.setItem("verifier", response.data.verifier);    
+        if (!profileResponse.data.ok) {
+            const response = await axios.get("http://localhost:3000/api/getAuth", {
+                withCredentials: true,
+            })
             document.location = response.data.spotURL
         } else {
-            
-            
-            const verifier = localStorage.getItem("verifier");
-
-
-                
-            const params = new URLSearchParams();
-            params.append("client_id", "bc9f189f3fcc42e1934d09886c74aa1e");
-            params.append("grant_type", "authorization_code");
-            params.append("code", code);
-            params.append("redirect_uri", "http://localhost:3000/callback");
-            params.append("code_verifier", verifier!);
-
-            const result = await fetch("https://accounts.spotify.com/api/token", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: params
-            });
-
-            const { access_token } = await result.json();
-
-
-            const profile = await fetch("https://api.spotify.com/v1/me", {
-                method: "GET", 
-                headers: { Authorization: `Bearer ${access_token}` 
-            }
-
-
-            });
-
-            console.log(await profile.json())
+            console.log(profileResponse.data.data)
         }
-        
 
     }
   return (

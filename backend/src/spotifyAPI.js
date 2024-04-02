@@ -1,5 +1,5 @@
-const clientId = "bc9f189f3fcc42e1934d09886c74aa1e"
 import crypto from "crypto"
+const clientId = "e860134359344a7a8089d918e95604a3"
 
 export const redirectToAuth = async () => {
     const verifier = generateCodeVerifier(128);
@@ -40,4 +40,21 @@ export async function generateCodeChallenge(codeVerifier) {
         .replace(/\+/g, '-')
         .replace(/\//g, '_')
         .replace(/=+$/, '');
+}
+
+export const getAccessToken = async (verifier, code) => {
+    const params = new URLSearchParams();
+    params.append("client_id", clientId);
+    params.append("grant_type", "authorization_code");
+    params.append("code", code);
+    params.append("redirect_uri", "http://localhost:3000/callback");
+    params.append("code_verifier", verifier);
+
+    const result = await fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params
+    });
+
+    return await result.json();
 }
