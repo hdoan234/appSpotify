@@ -69,9 +69,6 @@ class UserDataProps {
     uri: string = "";
 }
 
-socket.on("greet", (greet) => {
-    console.log(greet)
-})
 
 
 const Home: React.FC = () => {
@@ -86,6 +83,17 @@ const Home: React.FC = () => {
     }
 
     useEffect(() => {
+        const script = document.createElement('script');
+
+        script.src = "https://sdk.scdn.co/spotify-player.js";
+
+        document.body.appendChild(script);
+
+        socket.on("greet", (greet) => {
+            console.log(greet)
+        })
+        console.log(delay)
+
         axios.get("http://localhost:3000/api/profile", {
             withCredentials: true,
         })
@@ -138,8 +146,8 @@ const Home: React.FC = () => {
             
 
                 <img style={{width: "15%"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
-                <div>Currently Playing: { currentPlaying.item?.name } - By { currentPlaying.item?.artists.map((artist: any) => artist.name + ", ") }</div>
-                <input style={{width: "40%"}} readOnly type="range" step="0.001" min="1" max="100" value={ (parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(3) }></input>
+                <div>Currently Playing: { currentPlaying.item?.name } - By { currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ","}`) }</div>
+                <input style={{width: "40%"}} readOnly type="range" step="0.001" min="1" max="100" value={ (parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(3) } /> 
                 
                 <div>
                     { timeFormatter(currentPlaying.progress_ms) } / { timeFormatter(currentPlaying.item?.duration_ms) }
