@@ -7,7 +7,10 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser';
 
 import { redirectToAuth, getAccessToken } from "./src/spotifyAPI.js"
+import { createAccount, getAccount } from './src/database.js';
 
+import { Server } from 'socket.io';
+import { createServer } from 'http';
 
 
 const app = express();
@@ -19,6 +22,24 @@ app.use(cors({
 
 app.use(cookieParser());
 app.use(bodyParser.json())
+
+const httpServer = createServer(app)
+
+const io = new Server(httpServer, {
+  cors: {
+    origin: "http://localhost:8100",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+})
+
+io.on('connection', (socket) => {
+  socket.emit("greet", "Hello from server")
+})
+
+httpServer.listen(3001, () => {
+  console.log('Websocket is running on port 3001');
+})
 
 const isAuthenticated = (req) => {
   return Boolean(req.cookies.spot_access_token)
@@ -63,7 +84,17 @@ app.get("/callback", async (req, res) => {
     httpOnly: true,
   })
 
+  const result = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        'Authorization': `Bearer ${access_token}`
+      }
+  })
+
+  const account = getAccount(result.data.id)
+  if (!account) createAccount(result.data.email, result.data.id, result.data.display_name)
+
   res.redirect("http://localhost:8100/")
+
 })
 
 app.get('/api/playing', async (req, res) => {
@@ -75,7 +106,13 @@ app.get('/api/playing', async (req, res) => {
     return
   }
 
-  const response = await axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
+  const profileRes = await axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
+    headers: {
+      'Authorization': `Bearer ${req.cookies.spot_access_token}`
+    }
+  })
+
+  const devicesRes = await axios.get("https://api.spotify.com/v1/me/player/devices", {
     headers: {
       'Authorization': `Bearer ${req.cookies.spot_access_token}`
     }
@@ -83,7 +120,8 @@ app.get('/api/playing', async (req, res) => {
 
   res.send({
     "ok": true,
-    "data": response.data
+    "playing": profileRes.data,
+    "devices": devicesRes.data.devices
   })
 })
 

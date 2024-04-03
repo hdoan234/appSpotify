@@ -5,6 +5,10 @@ import { useInterval } from 'usehooks-ts';
 import axios from 'axios';
 
 import './Home.css';
+import { time } from 'ionicons/icons';
+
+import { io } from "socket.io-client";
+const socket = io("ws://localhost:3001");
 
 type ImageProps = {
     url: string
@@ -65,31 +69,27 @@ class UserDataProps {
     uri: string = "";
 }
 
+socket.on("greet", (greet) => {
+    console.log(greet)
+})
+
+
 const Home: React.FC = () => {
     const [userData, setUserData] = useState<UserDataProps>(new UserDataProps())
     const [delay, setDelay] = useState<number>(1000)
     const [currentPlaying, setCurrentPlaying] = useState<any>({})
+    const [deviceList, setDeviceList] = useState<any>([])
 
-    useInterval(() => {
-        axios.get("http://localhost:3000/api/playing", {
-            withCredentials: true,
-        }).then(response => {
-            if (!response.data.data && response.data.ok) {
-                setDelay(10000)
-            } else {
-                setDelay(1000)
-                setCurrentPlaying(response.data.data)
-                console.log(currentPlaying)
-            }
-        })
-    }, delay)
+
+    const timeFormatter = (time: string) : string => {
+        return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
+    }
 
     useEffect(() => {
         axios.get("http://localhost:3000/api/profile", {
             withCredentials: true,
         })
         .then((response) => {
-            console.log(response.data)
             if (!response.data.ok) {
                 document.location = "/"
             }
@@ -101,6 +101,21 @@ const Home: React.FC = () => {
         })
 
     }, [])
+
+    useInterval(() => {
+        axios.get("http://localhost:3000/api/playing", {
+            withCredentials: true,
+        }).then(response => {
+            setDeviceList(response.data["devices"])
+            if (!response.data.playing && response.data.ok) {
+                setDelay(10000)
+            } else {
+                setCurrentPlaying(response.data["playing"])
+                setDelay(200)
+            }
+        })
+    }, delay)
+
     
     return (
         <IonPage>
@@ -121,8 +136,21 @@ const Home: React.FC = () => {
                 <div>Followers: { userData.followers.total }</div>
                 <div>Spotify Profile: <a href={userData.uri}>{ userData.uri }</a></div>
             
-                <div>Current Playing: { currentPlaying.item?.name }</div>
-                <input type="range" min="1" max="100" value={ (parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed() }></input>
+
+                <img style={{width: "15%"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
+                <div>Currently Playing: { currentPlaying.item?.name } - By { currentPlaying.item?.artists.map((artist: any) => artist.name + ", ") }</div>
+                <input style={{width: "40%"}} readOnly type="range" step="0.001" min="1" max="100" value={ (parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(3) }></input>
+                
+                <div>
+                    { timeFormatter(currentPlaying.progress_ms) } / { timeFormatter(currentPlaying.item?.duration_ms) }
+                </div>
+
+                <select>
+                    <option value="">Select a device</option>
+                    { deviceList.map((device: any) => {
+                        return <option key={device.id} value={device.id}>{ device.name } - { device.type }</option>
+                    })}
+                </select>
             </IonContent>
         </IonPage>
     )
