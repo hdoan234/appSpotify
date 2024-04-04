@@ -65,7 +65,7 @@ app.get('/api/getAuth', async (req, res) => {
 
   const { verifier, spotURL } = await redirectToAuth()
 
-  res.cookie('verifier', verifier, { httpOnly: true })
+  res.cookie('verifier', verifier, { httpOnly: true, expires: 1000 * 60 * 60 })
 
   res.send({
     ok: true,

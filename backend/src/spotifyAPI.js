@@ -1,5 +1,5 @@
 import crypto from "crypto"
-const clientId = "e860134359344a7a8089d918e95604a3"
+const clientId = "bc9f189f3fcc42e1934d09886c74aa1e"
 
 export const redirectToAuth = async () => {
     const verifier = generateCodeVerifier(128);

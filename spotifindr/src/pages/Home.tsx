@@ -1,7 +1,7 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react"
 import { useInterval } from 'usehooks-ts';
-
+import { peopleOutline } from 'ionicons/icons';
 import axios from 'axios';
 
 import './Home.css';
@@ -74,9 +74,9 @@ class UserDataProps {
 const Home: React.FC = () => {
     const [userData, setUserData] = useState<UserDataProps>(new UserDataProps())
     const [delay, setDelay] = useState<number>(1000)
-    const [currentPlaying, setCurrentPlaying] = useState<any>({})
+    const [currentPlaying, setCurrentPlaying] = useState<any | null>({})
     const [deviceList, setDeviceList] = useState<any>([])
-
+    const [sliderProgress, setSliderProgress] = useState<string>("0")
 
     const timeFormatter = (time: string) : string => {
         return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
@@ -88,11 +88,6 @@ const Home: React.FC = () => {
         script.src = "https://sdk.scdn.co/spotify-player.js";
 
         document.body.appendChild(script);
-
-        socket.on("greet", (greet) => {
-            console.log(greet)
-        })
-        console.log(delay)
 
         axios.get("http://localhost:3000/api/profile", {
             withCredentials: true,
@@ -119,7 +114,8 @@ const Home: React.FC = () => {
                 setDelay(10000)
             } else {
                 setCurrentPlaying(response.data["playing"])
-                setDelay(200)
+                setSliderProgress((parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed())
+                setDelay(3000)
             }
         })
     }, delay)
@@ -127,33 +123,55 @@ const Home: React.FC = () => {
     
     return (
         <IonPage>
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonMenuButton />
-                    </IonButtons>
-                    <IonTitle>Home</IonTitle>
-                </IonToolbar>
-            </IonHeader>
-
-            <IonContent fullscreen>
+        
+            <IonContent fullscreen className="background">
                 {/* TODO: Add styling to these dynamic fields */}
-                <div>Name: { userData.display_name }</div>
-                <img src={userData.images[0]?.url} alt="avatar" />
-                <div>Country: { userData.country }</div>
-                <div>Followers: { userData.followers.total }</div>
-                <div>Spotify Profile: <a href={userData.uri}>{ userData.uri }</a></div>
-            
-
-                <img style={{width: "15%"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
-                <div>Currently Playing: { currentPlaying.item?.name } - By { currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ","}`) }</div>
-                <input style={{width: "40%"}} readOnly type="range" step="0.001" min="1" max="100" value={ (parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(3) } /> 
                 
                 <div>
-                    { timeFormatter(currentPlaying.progress_ms) } / { timeFormatter(currentPlaying.item?.duration_ms) }
+                    <div  style={{ color: "white" }}  className='name-block'>
+                        <a href={userData.uri}> 
+                            <img src={userData.images[0]?.url} className="ava" alt="avatar" /> 
+                        </a>
+                        <div className="info">
+                            <a style={{ width: "100%", display: "flex", justifyContent: "left" }} href={userData.uri}>
+                                <span style={{ color: "white" }}className="username" >
+                                    { userData.display_name }
+                                </span>
+                            </a>
+                            <div className='more-info'>
+                                <IonIcon icon={peopleOutline} color="white" style={{ fontSize: "1.25rem", marginRight: "5px" }}></IonIcon>
+                                <span>Followers: { userData.followers.total }</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                {
+                currentPlaying ?
+                <div>
+                    <div className="album-image"> 
+                        <img  style={{width: "70%", borderRadius: "8%"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
+                        <p className="title">{currentPlaying.item?.name } </p>
+                        <p style={{fontSize:"0.7rem"}}>{ currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ", "}`) }
+                        </p>
+                        <div className="slide-container">
+                            
+                            <p className="time">
+                                {timeFormatter(currentPlaying.progress_ms) }
+                            </p>
+                                <input className='slider' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
 
-                <select>
+                             <p className="time">
+                                   { timeFormatter(currentPlaying.item?.duration_ms) }
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                : ""
+                }
+                
+                
+
+                <select className='devices'>
                     <option value="">Select a device</option>
                     { deviceList.map((device: any) => {
                         return <option key={device.id} value={device.id}>{ device.name } - { device.type }</option>
