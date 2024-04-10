@@ -17,7 +17,6 @@ ion-content {
     display: flex;
     justify-content: left;
     align-items: center;
-    vertical-align: top;
 }
 .spot-link {
     color: white
@@ -27,15 +26,15 @@ ion-content {
     border-radius: 50%;
     margin: 8% 3% 8% 3%;
     height: 10vh;
-    
+    width: 10vh;
+    object-fit: cover;
 }
 .name-block {
     display: flex;
     justify-content: left;
     margin-left: 5%;
     align-items: center;
-    vertical-align: top;
-    margin-top: 5%;
+    margin-top: 2vh;
 }
 .username{
     font-size: 150%;
@@ -45,7 +44,7 @@ ion-content {
     font-size: 12px;
     display: flex;
     justify-content: left;
-    align-items: center;
+    align-items: flex-start;
     vertical-align: top;
     flex-direction: column;
     margin-left: 5%;

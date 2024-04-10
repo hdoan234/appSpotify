@@ -6,12 +6,13 @@ import axios from 'axios';
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser';
 
-import { redirectToAuth, getAccessToken } from "./src/spotifyAPI.js"
-import { createAccount, getAccount } from './src/database.js';
+import { redirectToAuth, getAccessToken, getAccessTokenWithRefreshToken } from "./src/spotifyAPI.js"
+import { createAccountWithSpotify, getAccount, getFollowing, getAccountById } from './src/database.js';
 
 import { Server } from 'socket.io';
-import { createServer } from 'http';
+import { createServer, get } from 'http';
 
+import { PrismaClient } from '@prisma/client';
 
 const app = express();
 
@@ -45,14 +46,6 @@ const isAuthenticated = (req) => {
   return Boolean(req.cookies.spot_access_token)
 }
 
-app.post('/', (req, res) => {
-  const data = req.body
-  console.log(data)
-  if (data["username"] == 'hung' && data['password'] == "123") res.send('Login succesful')
-
-  res.send('Login Failed');
-});
-
 app.get('/api/getAuth', async (req, res) => {
 
   if (isAuthenticated(req)) {
@@ -65,7 +58,7 @@ app.get('/api/getAuth', async (req, res) => {
 
   const { verifier, spotURL } = await redirectToAuth()
 
-  res.cookie('verifier', verifier, { httpOnly: true, expires: 1000 * 60 * 60 })
+  res.cookie('verifier', verifier, { httpOnly: true, maxAge: 1000 * 60 * 60 })
 
   res.send({
     ok: true,
@@ -73,15 +66,83 @@ app.get('/api/getAuth', async (req, res) => {
   })
 })
 
+app.post('/api/credAuth', async (req, res) => {
+  const { username, password, type } = req.body
+
+  console.log(req.body)
+  const prisma = new PrismaClient()
+
+  if (!username || !password || !type) {
+    res.send({
+      "ok": false,
+      "message": "Missing fields"
+    })
+    return
+  }
+
+  if (type == 'login') {
+    const account = await prisma.user.findUnique({
+      where: {
+        email: username
+      }
+    })
+
+    if (!account) {
+      res.send({
+        "ok": false,
+        "message": "Account not found"
+      })
+      return
+    }
+
+    const newToken = await getAccessTokenWithRefreshToken(account.refresh_token)
+
+    console.log(newToken)
+
+    res.cookie('spot_access_token', newToken.access_token, {
+      httpOnly: true
+    })
+    res.cookie('spot_refresh_token', newToken.refresh_token, {
+      httpOnly: true
+    })
+
+    await prisma.user.update({
+      where: {
+        email: username
+      },
+      data: {
+        refresh_token: newToken.refresh_token
+      }
+    
+    })
+
+    res.send({
+      "ok": true,
+      "message": "Logged in"
+    })
+
+
+  }
+})
+
 app.get("/callback", async (req, res) => {
   
   const verifier = req.cookies.verifier
   const code = req.query.code
 
-  const { access_token } = await getAccessToken(verifier, code)
+  const tokenObj = await getAccessToken(verifier, code)
+
+  console.log(tokenObj)
+
+  const access_token = tokenObj.access_token
+  const refresh_token = tokenObj.refresh_token
 
   res.cookie('spot_access_token', access_token, { 
     httpOnly: true,
+  })
+
+  res.cookie('spot_refresh_token', refresh_token, {
+    httpOnly: true
   })
 
   const result = await axios.get('https://api.spotify.com/v1/me', {
@@ -90,8 +151,25 @@ app.get("/callback", async (req, res) => {
       }
   })
 
-  const account = getAccount(result.data.id)
-  if (!account) createAccount(result.data.email, result.data.id, result.data.display_name)
+  const account = await getAccount(result.data.id)
+  
+  res.cookie('spot_user_id', result.data.id, {
+    httpOnly: true
+  })
+  
+  const prisma = new PrismaClient()
+
+  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token)
+  else {
+    await prisma.user.update({
+      where: {
+        spotifyId: result.data.id
+      },
+      data: {
+        refresh_token: refresh_token
+      }
+    })
+  }
 
   res.redirect("http://localhost:8100/")
 
@@ -152,6 +230,44 @@ app.get('/api/profile', async (req, res) => {
     })
     return
   }
+
+})
+
+app.get('/api/followingUser', async (req, res) => {
+  if (!isAuthenticated(req)) {
+    res.status(401).send({
+      "ok": false,
+      "message": "Not authenticated"
+    })
+    return
+  }
+
+  const followingUser = await getFollowing(req.cookies.spot_user_id)
+
+ if (!followingUser || !followingUser.following) {
+    res.send({
+      "ok": false,
+      "message": "User not found"
+    })
+    return
+  }
+
+  const userObj = []
+  
+  for (let user in followingUser.following) {
+    const account = await getAccountById(followingUser.followers[user].followingId)
+
+    console.log(account)
+
+    userObj.push(account)
+  }
+
+  console.log(userObj)
+
+  res.send({
+    "ok": true,
+    "following": userObj
+  })
 
 })
 

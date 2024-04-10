@@ -22,8 +22,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  followers Follows[] @relation("FollowerRelation")
-  following Follows[] @relation("FollowingRelation")
+  refresh_token String? @default("")
+
+  followers Follows[] @relation("FollowingRelation")
+  following Follows[] @relation("FollowerRelation")
 }
 
 model Follows {

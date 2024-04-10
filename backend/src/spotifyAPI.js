@@ -1,5 +1,10 @@
 import crypto from "crypto"
 const clientId = "bc9f189f3fcc42e1934d09886c74aa1e"
+const clientSecret = "ef343bf5d97245e581abbfbabae45c68"
+
+import axios from "axios"
+
+import { PrismaClient } from "@prisma/client"
 
 export const redirectToAuth = async () => {
     const verifier = generateCodeVerifier(128);
@@ -18,7 +23,6 @@ export const redirectToAuth = async () => {
         "verifier": verifier,
     };
 }
-
 export function generateCodeVerifier(length) {
     let text = '';
     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -56,4 +60,24 @@ export const getAccessToken = async (verifier, code) => {
     });
 
     return await result.json();
+}
+
+export const getAccessTokenWithRefreshToken = async (refreshToken) => {
+
+    const url = 'https://accounts.spotify.com/api/token';
+    const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + new Buffer.from(clientId + ':' + clientSecret).toString('base64'),
+    }
+
+    const form = {
+        'grant_type': 'refresh_token',
+        'refresh_token': refreshToken,
+    }
+
+    const body = await axios.post(url, form, { headers: headers, json: true});
+
+    
+
+    return body.data;
 }

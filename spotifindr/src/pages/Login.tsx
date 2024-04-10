@@ -17,17 +17,21 @@ const Page: React.FC = () => {
     const handleSubmit = async (e : any) : Promise<void> => {
         e.preventDefault()
 
-        const response = await axios.post("http://localhost:3000", {
+        const response = await axios.post("http://localhost:3000/api/credAuth", {
             "username": username,
-            "password": password
+            "password": password,
+            "type": login
         }, {
             headers: {
                 "Content-Type": "application/json"
-            }
+            },
+            withCredentials: true
         })
 
 
-        console.log(response.data)
+        if (response.data.ok) {
+            document.location = "/home"
+        }
     }
 
     const spotAuthHandler = async () : Promise<void> => {

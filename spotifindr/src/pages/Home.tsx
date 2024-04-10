@@ -83,11 +83,12 @@ const Home: React.FC = () => {
     }
 
     useEffect(() => {
-        const script = document.createElement('script');
-
-        script.src = "https://sdk.scdn.co/spotify-player.js";
-
-        document.body.appendChild(script);
+        if (!document.getElementById("spotify-script")) {
+            const script = document.createElement('script');
+            script.id = "spotify-script";
+            script.src = "https://sdk.scdn.co/spotify-player.js";
+            document.body.appendChild(script);
+        }
 
         axios.get("http://localhost:3000/api/profile", {
             withCredentials: true,
@@ -115,7 +116,7 @@ const Home: React.FC = () => {
             } else {
                 setCurrentPlaying(response.data["playing"])
                 setSliderProgress((parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed())
-                setDelay(3000)
+                setDelay(500)
             }
         })
     }, delay)
@@ -130,7 +131,7 @@ const Home: React.FC = () => {
                 <div>
                     <div  style={{ color: "white" }}  className='name-block'>
                         <a href={userData.uri}> 
-                            <img src={userData.images[0]?.url} className="ava" alt="avatar" /> 
+                            <img src={userData.images[1]?.url} className="ava" alt="avatar" /> 
                         </a>
                         <div className="info">
                             <a style={{ width: "100%", display: "flex", justifyContent: "left" }} href={userData.uri}>
@@ -149,7 +150,7 @@ const Home: React.FC = () => {
                 currentPlaying ?
                 <div>
                     <div className="album-image"> 
-                        <img  style={{width: "70%", borderRadius: "8%"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
+                        <img  style={{width: "70%", borderRadius: "8%", maxWidth: "600px"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
                         <p className="title">{currentPlaying.item?.name } </p>
                         <p style={{fontSize:"0.7rem"}}>{ currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ", "}`) }
                         </p>
@@ -158,7 +159,7 @@ const Home: React.FC = () => {
                             <p className="time">
                                 {timeFormatter(currentPlaying.progress_ms) }
                             </p>
-                                <input className='slider' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
+                            <input className='slider' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
 
                              <p className="time">
                                    { timeFormatter(currentPlaying.item?.duration_ms) }
