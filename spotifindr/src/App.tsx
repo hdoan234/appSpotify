@@ -4,6 +4,7 @@ import { Redirect, Route } from 'react-router-dom';
 import Menu from './components/Menu';
 import Home from './pages/Home';
 import Login from './pages/Login';
+import Profile from './pages/Profile';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -51,11 +52,15 @@ const App: React.FC = () => {
         <IonSplitPane contentId="main">
           <IonRouterOutlet id="main">
             <Route path="/" exact={true}>
-              {authenticated ? <Redirect to="/home"></Redirect> : <Login />}
+              {authenticated ? <Redirect to="/profile"></Redirect> : <Login />}
             </Route>
             <Route path="/home" exact={true}>
-              {authenticated ? <Home /> : <Redirect to="/"></Redirect>}
+              <Home />
             </Route>
+            <Route path="/profile" exact={true}>
+              {authenticated ? <Profile /> : <Redirect to="/"></Redirect>}
+            </Route>
+            
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

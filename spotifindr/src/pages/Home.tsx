@@ -9,8 +9,6 @@ import FriendBlock from '../components/FriendBlock';
 import axios from 'axios';
 import { FollowUserProps, UserDataProps } from '../type';
 
-import { useQuery } from 'react-query';
-
 const Home: React.FC = () => {
   const [following, setFollowing] = useState<FollowUserProps[]>([]);
   const [profile, setProfile] = useState<UserDataProps>();

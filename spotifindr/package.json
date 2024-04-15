@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start": "npx ionic serve",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test.e2e": "cypress run",
@@ -25,6 +26,7 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
+    "ionic-cli": "^0.0.0",
     "ionicons": "^7.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
