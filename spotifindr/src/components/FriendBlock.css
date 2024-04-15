@@ -1,0 +1,35 @@
+.friend-ava {
+    width: 10vh;
+    height:10vh;
+    border-radius: 10%;
+    margin-left: 10px;
+
+}
+.friend-name{
+    font-size: 15px;
+    align-items: center;
+    color: black;
+}
+.friend{
+    display: flex;
+    flex-direction: row;
+    margin: 1vh;
+    color: black;
+    background: rgba(255, 255, 255, 0.171);
+    box-shadow: 5px 5px 20px  rgba(0, 0, 0, 0.39);
+    border-radius: 10px;
+    width: 85%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.friend-content{
+    display: flex;
+    flex-direction: column;
+    margin-top: 2vh;
+    color: black;
+    align-items: center;
+}

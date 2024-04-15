@@ -1,111 +1,32 @@
-ion-content {
-    color: white;
+.search-bar{
+    --border-radius:10px;
+    --background: #A1CEB5;
+    --color:black;
+    width:80vw;
 }
 
-:root {
-    --green_theme: #black
-}
-
-.background{
-    --background: linear-gradient(180deg, #000000 20%, #104912 ) ;
-}
-.hometitle{
-    font-size: 25px;
-    text-align: center;
-}
-.more-info{
+.search-container{
     display: flex;
-    justify-content: left;
+    justify-content: center;
     align-items: center;
-}
-.spot-link {
-    color: white
-}
-
-.ava{
-    border-radius: 50%;
-    margin: 8% 3% 8% 3%;
-    height: 10vh;
-    width: 10vh;
-    object-fit: cover;
-}
-.name-block {
-    display: flex;
-    justify-content: left;
-    margin-left: 5%;
-    align-items: center;
+    flex-direction: row;
     margin-top: 2vh;
 }
-.username{
-    font-size: 150%;
+.user{
+    border-radius: 50%;
+    height: 8vw;
+    width: 8vw;
+    object-fit: cover;
 }
-
-.info{
-    font-size: 12px;
+.user-ava-container {
+    height: 8vw;
+    width: 8vw;
+}
+.friend-container{
     display: flex;
-    justify-content: left;
-    align-items: flex-start;
-    vertical-align: top;
     flex-direction: column;
-    margin-left: 5%;
-}
-.album-image{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    font-size: 120%;
-    margin: 3vh;
-}
-.title{
-    margin: 1vh;
-}
-.slide-container{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width:150%;
-
-}
-.slider{
-    -webkit-appearance: none;  /* Override default CSS styles */
-    border-radius:15px;
-    width: 100%; /* Full-width */
-    height: 10px; /* Specified height */
-    background: rgb(255, 255, 255) ;
-    outline: none; /* Remove outline */
-    opacity: 0.9; /* Set transparency (for mouse-over effects on hover) */    
-}
-.slider::-webkit-slider-thumb {
-    opacity: 0;
-}
-.slider::-webkit-slider-thumb:hover {
-    opacity: 1;
-    transform: translateX(-0.25px);
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%; 
-    background: #04AA6D;
-    cursor: pointer;
-    border: 1px solid white;
-
-}
-  
-.slider::-moz-range-thumb {
-width: 25px;
-height: 25px;
-border-radius: 50%;
-background: #04AA6D;
-cursor: pointer;
-}
-
-.time{
-    font-size: 0.8rem;
-    padding: 5px;
-}
-.devices{
-    display: flex;
-    justify-content: right;
+    background: -webkit-linear-gradient(90deg, #02B389 30%, #9DC8B0 100%);
+    border-radius: 10px;
+    margin: 5% 5% 5% 5%;
+    padding: 2vh;
 }
