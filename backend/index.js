@@ -7,7 +7,7 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser';
 
 import { redirectToAuth, getAccessToken, getAccessTokenWithRefreshToken } from "./src/spotifyAPI.js"
-import { createAccountWithSpotify, getAccount, getFollowing, getAccountById } from './src/database.js';
+import { createAccountWithSpotify, getAccount, getFollowing, getAccountById, sendFollow } from './src/database.js';
 
 import { Server } from 'socket.io';
 import { createServer, get } from 'http';
@@ -69,7 +69,6 @@ app.get('/api/getAuth', async (req, res) => {
 app.post('/api/credAuth', async (req, res) => {
   const { username, password, type } = req.body
 
-  console.log(req.body)
   const prisma = new PrismaClient()
 
   if (!username || !password || !type) {
@@ -97,7 +96,6 @@ app.post('/api/credAuth', async (req, res) => {
 
     const newToken = await getAccessTokenWithRefreshToken(account.refresh_token)
 
-    console.log(newToken)
 
     res.cookie('spot_access_token', newToken.access_token, {
       httpOnly: true
@@ -132,7 +130,6 @@ app.get("/callback", async (req, res) => {
 
   const tokenObj = await getAccessToken(verifier, code)
 
-  console.log(tokenObj)
 
   const access_token = tokenObj.access_token
   const refresh_token = tokenObj.refresh_token
@@ -233,7 +230,7 @@ app.get('/api/profile', async (req, res) => {
 
 })
 
-app.get('/api/followingUser', async (req, res) => {
+app.get('/api/currentFollow', async (req, res) => {
   if (!isAuthenticated(req)) {
     res.status(401).send({
       "ok": false,
@@ -242,9 +239,9 @@ app.get('/api/followingUser', async (req, res) => {
     return
   }
 
-  const followingUser = await getFollowing(req.cookies.spot_user_id)
+  const user = await getFollowing(req.cookies.spot_user_id)
 
- if (!followingUser || !followingUser.following) {
+ if (!user || !user.following) {
     res.send({
       "ok": false,
       "message": "User not found"
@@ -253,21 +250,55 @@ app.get('/api/followingUser', async (req, res) => {
   }
 
   const userObj = []
-  
-  for (let user in followingUser.following) {
-    const account = await getAccountById(followingUser.followers[user].followingId)
+  const followerObj = []
 
-    console.log(account)
-
+  for (let followedUser in user.following) {
+    const account = await getAccountById(user.following[followedUser].followingId)
     userObj.push(account)
   }
 
-  console.log(userObj)
+  for (let followedUser in user.followers) {
+    const account = await getAccountById(user.followers[followedUser].followerId)
+    followerObj.push(account)
+  }
 
   res.send({
     "ok": true,
-    "following": userObj
+    "following": userObj,
+    "followers": followerObj
   })
+
+})
+
+app.get("/api/sendFollow", async (req, res) => {
+  if (!isAuthenticated(req)) {
+    res.status(401).send({
+      "ok": false,
+      "message": "Not authenticated"
+    })
+    return
+  }
+
+  const { toId } = req.query
+
+  const followingUser = await getFollowing(req.cookies.spot_user_id)
+
+  if (!followingUser) {
+    res.send({
+      "ok": false,
+      "message": "User not found"
+    })
+    return
+  }
+
+  try {
+    await sendFollow(followingUser.spotifyId, toId)
+  } catch(e) {
+    res.send({
+      "ok": false,
+      "message": e.message
+    })
+  } 
 
 })
 
