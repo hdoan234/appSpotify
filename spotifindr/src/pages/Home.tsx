@@ -13,7 +13,12 @@ const Home: React.FC = () => {
   const [following, setFollowing] = useState<FollowUserProps[]>([]);
   const [profile, setProfile] = useState<UserDataProps>();
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPlaying, setCurrentPlaying] = useState<any | null>({})
 
+  const timeFormatter = (time: string) : string => {
+    return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
+}
+  
   const fetchData = async() => {
       const follow = await axios.get("http://localhost:3000/api/currentFollow", {
         withCredentials: true,
@@ -49,8 +54,10 @@ const Home: React.FC = () => {
           <div style={{color: "white"}}>Loading...</div>
         : <div className="friend-container">
         { following?.map((follow) => <FriendBlock url={follow.imageUrl} key={follow.spotifyId} >{follow.name}</FriendBlock> )}
-      </div>
+        </div>
+   
       }
+
         
       </IonContent>
     </IonPage>
