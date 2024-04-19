@@ -88,9 +88,8 @@ a:hover{
     border: 2px solid #030303;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-
-
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;;
+    margin-top: auto;
 }
 #spotify:hover{
     background: black;

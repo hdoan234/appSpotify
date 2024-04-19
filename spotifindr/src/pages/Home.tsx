@@ -3,7 +3,6 @@ import './Home.css';
 import React, { useEffect, useState } from 'react';
 import { IonSearchbar } from '@ionic/react';
 
-
 import FriendBlock from '../components/FriendBlock';
 
 import axios from 'axios';

@@ -7,11 +7,12 @@ import './Room.css';
 import { FollowUserProps, UserDataProps } from '../type';
 
 const Home: React.FC = () => {
-    const [userData, setUserData] = useState<UserDataProps>();
+  
     const [currentPlaying, setCurrentPlaying] = useState<any | null>({});
     const [following, setFollowing] = useState<FollowUserProps[]>([]);
     const [profile, setProfile] = useState<UserDataProps>();
-    
+    const [isLoading, setIsLoading] = useState(false);
+  
     return(
         <IonPage>
             <IonContent fullscreen className='background'>
