@@ -11,21 +11,20 @@ import * as user from '../utils/user';
 
 const Home: React.FC = () => {
   const [following, setFollowing] = useState<FollowUserProps[]>([]);
-  // const [profile, setProfile] = useState<UserDataProps>();
+  const [profile, setProfile] = useState<UserDataProps>();
   const [isLoading, setIsLoading] = useState(false);
 
   const fetchData = async() => {
       const follow = user.getCurrentFollow();
-      // const profile = user.getUser();
+      const profile = user.getUser();
 
-    return { "follow": await follow, }
-    // "profile": await profile };
+    return { "follow": await follow, "profile": await profile };
   }
 
   useEffect(() => {
     fetchData().then((data) => {
       setFollowing(data.follow.following)
-      // setProfile(data.profile)
+      setProfile(data.profile)
 
     }).then(() => setIsLoading(true))
   }, [])
@@ -48,7 +47,7 @@ const Home: React.FC = () => {
           <IonSearchbar className="search-bar" ></IonSearchbar>
 
           <a href="/profile">
-            {/* <img src={profile?.images[1].url} className="user" alt="avatar" />  */}
+            <img src={profile?.images[1].url} className="user" alt="avatar" /> 
           </a>
         </div>
         {
