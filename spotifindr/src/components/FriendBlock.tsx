@@ -6,8 +6,8 @@ import "./FriendBlock.css";
 
 
 const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
-    const [sliderProgress, setSliderProgress] = useState<string>("0")
-  
+    const sliderProgress = (parseInt(currentPlaying?.progress_ms) /  parseInt(currentPlaying?.item?.duration_ms) * 100).toFixed()
+    
     const timeFormatter = (time: string) : string => {
       return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
     }
@@ -19,25 +19,29 @@ const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
                 <img className="friend-ava" src={url} alt="avatar" />
                 <div className="friend-name">{children}</div>
             </div>
-            
-            <div className="friend-playing">
-                <div className="progress-slider">
-                    <p className="time-friend">
-                        {timeFormatter(currentPlaying.progress_ms) }
+            {/* TODO: Add design to each friend block */}
+            {
+                currentPlaying || currentPlaying?.is_playing ?
+                <div className="friend-playing">
+                    <div className="progress-slider">
+                        <p className="time-friend">
+                            {timeFormatter(currentPlaying?.progress_ms) }
+                        </p>
+                        <input className='slider-friend' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
+                        <p className="time-friend">
+                            { timeFormatter(currentPlaying?.item?.duration_ms) }
+                        </p>
+                    </div>
+                    <p className="song-friend"> 
+                        <p>Song: {currentPlaying.item.name} </p>
+                        <p className="artist">Artist: {currentPlaying?.item?.album.artists.map((artist : any, index: number) => index != currentPlaying.item.album.artists.length - 1 ? artist.name + " ," : artist.name)} </p>
                     </p>
-                    <input className='slider-friend' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
-                    <p className="time-friend">
-                        { timeFormatter(currentPlaying.item?.duration_ms) }
-                    </p>
-                </div>
-                <p className="song-friend"> 
-                    <p>Song: {currentPlaying.item.name} </p>
-                    <p className="artist">Artist: {currentPlaying.item.album.artists.map((artist : any, index: number) => index != currentPlaying.item.album.artists.length - 1 ? artist.name + " ," : artist.name)} </p>
-                </p>
 
-                    <button type="button" className="join-button">Join</button>
-              
-            </div>
+                        <button type="button" className="join-button">Join</button>
+                
+                </div>
+                : <div className="friend-playing">Not currently playing</div>
+            }
         </div>
         
     );

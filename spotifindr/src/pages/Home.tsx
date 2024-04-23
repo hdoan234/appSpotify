@@ -7,32 +7,50 @@ import { IonSearchbar } from '@ionic/react';
 import FriendBlock from '../components/FriendBlock';
 
 import { FollowUserProps, UserDataProps } from '../type';
-import * as user from '../utils/user';
+import * as userUtil from '../utils/userUtil';
+import { search } from 'ionicons/icons';
 
 const Home: React.FC = () => {
   const [following, setFollowing] = useState<FollowUserProps[]>([]);
+  const [fetchedSearch, setFetchedSearch] = useState<any[]>([])
+  const [searchData, setSearchData] = useState<any[]>([]);
   const [profile, setProfile] = useState<UserDataProps>();
   const [isLoading, setIsLoading] = useState(false);
+  const [searchFocus, setSearchFocus] = useState(false);
 
   const fetchData = async() => {
-      const follow = user.getCurrentFollow();
-      const profile = user.getUser();
+      const follow = userUtil.getCurrentFollow();
+      const profile = userUtil.getUser();
+      const search = userUtil.getAllUsers();
 
-    return { "follow": await follow, "profile": await profile };
+    return { "follow": await follow, "profile": await profile, search: await search};
+  }
+
+  const searchHandler = (e: any) => {
+    const searchEntry = e.target.value.toLowerCase();
+
+    if (searchEntry === "") {
+      setSearchData([])
+      return
+    }
+
+    setSearchData(fetchedSearch.filter((user) => {
+      return user.name.toLowerCase().includes(searchEntry) || user.email.includes(searchEntry)
+    }))
+    console.log(searchData.map((user) => user.name))
   }
 
   useEffect(() => {
     fetchData().then((data) => {
       setFollowing(data.follow.following)
       setProfile(data.profile)
-
+      setFetchedSearch(data.search)
     }).then(() => setIsLoading(true))
   }, [])
 
   useInterval(() => {
-    user.getCurrentFollow().then((data) => {
+    userUtil.getCurrentFollow().then((data) => {
       setFollowing(data.following)
-      console.log(data.following)
     })
   }, 5000)
 
@@ -44,8 +62,24 @@ const Home: React.FC = () => {
         !isLoading ? <h1>Loading...</h1> :
         <>
         <div className="search-container" >
-          <IonSearchbar className="search-bar" ></IonSearchbar>
-
+          <div className="search-bar-component">
+            <IonSearchbar className="search-bar" onIonInput={searchHandler} onIonFocus={() => setSearchFocus(true)} onIonBlur={() => setSearchFocus(false)}></IonSearchbar>
+            <div onFocus={() => setSearchFocus(true)} className="result-list" style={{ display: `${searchFocus ? "inline" : "none"}` }}>
+              {
+                searchData.map((user) => 
+                <div key={user.spotifyId} className="search-result">
+                  <span>
+                    {user.name}
+                  </span>
+                  {/* TODO: Add design to the dropdown search results */}
+                  {
+                    user.spotifyId !== profile?.id &&
+                    <button onClick={() => userUtil.followUser(user.spotifyId)} className='follow'>{following.some((follow) => follow.userInfo.spotifyId === user.spotifyId) ? "Followed" : "Follow"}</button>
+                  }
+                </div>)
+              }
+            </div>
+          </div>
           <a href="/profile">
             <img src={profile?.images[1].url} className="user" alt="avatar" /> 
           </a>
@@ -54,7 +88,7 @@ const Home: React.FC = () => {
           // TODO: Add more styling to no following
           following.length == 0 ? <h1 style={{textAlign: "center"}}>Oof... You're not following anyone</h1> :
           <div className="friend-container">
-          { following?.map((follow) => <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.playing} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> )}
+          { following?.map((follow) => <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> )}
           </div>
         }
         </>

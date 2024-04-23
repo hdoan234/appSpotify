@@ -35,3 +35,20 @@ export const getCurrentFollow = async () : Promise<any> => {
     }
 };
 
+export const getAllUsers = async () : Promise<any> => {
+    try {
+        const res = await axios.get('http://localhost:3000/api/allUsers');
+        return res.data;
+    } catch (e) {
+        throw new Error('Error getting all users');
+    }
+};
+
+export const followUser = async (id : string) : Promise<any> => {
+    try {
+        const res = await axios.get('http://localhost:3000/api/sendFollow?toId=' + id);
+        return res.data;
+    } catch (e) {
+        throw new Error('Error following user');
+    }
+};

@@ -5,7 +5,7 @@ import { peopleOutline } from 'ionicons/icons';
 
 import './Profile.css';
 
-import * as user from '../utils/user'; 
+import * as userUtil from '../utils/userUtil'; 
 import { UserDataProps } from '../type';
 
 const Home: React.FC = () => {
@@ -28,7 +28,7 @@ const Home: React.FC = () => {
             document.body.appendChild(script);
         }
 
-        user.getUser()
+        userUtil.getUser()
         .then((data) => {
             if (!data) {
                 document.location = "/"
@@ -42,12 +42,12 @@ const Home: React.FC = () => {
     }, [])
 
     useInterval(() => {
-        user.userPlayingState()
+        userUtil.userPlayingState()
         .then(response => {
             console.log(response);
 
             setDeviceList(response.devices)
-            if (!response.playing && response.data.ok || !response.ok) {
+            if (!response.playing || !response.ok) {
                 setDelay(10000)
             } else {
                 setCurrentPlaying(response.playing)
@@ -60,7 +60,7 @@ const Home: React.FC = () => {
         })
         .catch((error) => {
             console.log(error)
-            document.location = "/"
+            // document.location = "/"
         })
     }, delay)
 

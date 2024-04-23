@@ -392,6 +392,14 @@ app.get('/api/currentFollow', async (req, res) => {
 
 })
 
+
+app.get('/api/logout', async (req, res) => {})
+app.get('/api/allUsers', async (req, res) => {
+  const users = await prisma.user.findMany()
+
+  res.send(users)
+})
+
 app.get("/api/sendFollow", async (req, res) => {
   if (!isAuthenticated(req)) {
     res.status(401).send({
@@ -402,8 +410,22 @@ app.get("/api/sendFollow", async (req, res) => {
   }
 
   const { toId } = req.query
+  if (!toId) {
+    res.status(400).send({
+      "ok": false,
+      "message": "Missing fields"
+    })
+  }
 
-  const followingUser = await getFollowing(req.cookies.spot_user_id)
+  if (toId == req.session.user.spotifyId) {
+    res.send({
+      "ok": false,
+      "message": "Can't follow yourself"
+    })
+    return
+  }
+
+  const followingUser = await getFollowing(req.session.user.spotifyId)
 
   if (!followingUser) {
     res.send({

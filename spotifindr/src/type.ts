@@ -8,6 +8,7 @@ export interface UserDataProps {
 
     country: string,
     display_name: string,
+    email: string,
     explicit_content : {
         filter_enabled: boolean,
         filter_locked: boolean
