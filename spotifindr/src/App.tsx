@@ -30,37 +30,26 @@ import axios from 'axios';
 
 setupIonicReact();
 
+import { checkAuth } from './utils/auth';
+
 const App: React.FC = () => {
 
   const [authenticated, setAuthenticated] = useState(false)
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/getAuth", {
-        withCredentials: true,
-    }).then(response => {
-        if (!response.data.ok) {
-          setAuthenticated(true)            
-        }
-    }).catch(error => {
-        console.log(error)
+    checkAuth().then((response) => {
+      setAuthenticated(response)
     })
-}, [])
+  }, [])
 
   return (
     <IonApp>
       <IonReactRouter>
         <IonSplitPane contentId="main">
           <IonRouterOutlet id="main">
-            <Route path="/" exact={true}>
-              {authenticated ? <Redirect to="/profile"></Redirect> : <Login />}
-            </Route>
-            <Route path="/home" exact={true}>
-              <Home />
-            </Route>
-            <Route path="/profile" exact={true}>
-              {authenticated ? <Profile /> : <Redirect to="/"></Redirect>}
-            </Route>
-            
+            <Route path="/" exact={true} render={() => authenticated ? <Profile /> : <Login />} />
+            <Route path="/home" exact={true} render={() => authenticated ? <Home /> : <Login />} />
+            <Route path="/profile" exact={true} render={() => authenticated ? <Profile /> : <Login />} />
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

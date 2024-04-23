@@ -21,6 +21,7 @@ const Home: React.FC = () => {
     }
 
     useEffect(() => {
+
         if (!document.getElementById("spotify-script")) {
             const script = document.createElement('script');
             script.id = "spotify-script";
@@ -39,6 +40,17 @@ const Home: React.FC = () => {
             document.location = "/"
         })
 
+        userUtil.userPlayingState()
+        .then(response => {
+            console.log(response);
+
+            setDeviceList(response.devices)
+            setCurrentPlaying(response.playing)
+            setProgress(parseInt(response.playing.progress_ms))
+            setSliderProgress((progress /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(2))
+
+            setIsLoading(false)
+        })
     }, [])
 
     useInterval(() => {
@@ -50,10 +62,8 @@ const Home: React.FC = () => {
             setCurrentPlaying(response.playing)
             setProgress(parseInt(response.playing.progress_ms))
             setSliderProgress((progress /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(2))
-            
-            if (userData) {
-                setIsLoading(false)
-            }
+
+            setIsLoading(false)
         })
         .catch((error) => {
             console.log(error)
@@ -70,7 +80,7 @@ const Home: React.FC = () => {
             
         }, 100)
         return () => clearInterval(interval)
-    })
+    }, [progress, currentPlaying])
     
     // TODO: Loading spinner
     if (isLoading) {
