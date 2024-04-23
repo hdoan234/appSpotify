@@ -170,7 +170,7 @@ app.get("/callback", async (req, res) => {
     "spotifyId": result.data.id,
   }
   
-  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token, access_token, result.data.images[2].url)
+  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token, access_token, result.data.images[1].url)
   else {
     await prisma.user.update({
       where: {
