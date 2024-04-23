@@ -10,10 +10,10 @@ import { UserDataProps } from '../type';
 
 const Home: React.FC = () => {
     const [userData, setUserData] = useState<UserDataProps>()
-    const [delay, setDelay] = useState<number>(1000)
     const [currentPlaying, setCurrentPlaying] = useState<any | null>({})
     const [deviceList, setDeviceList] = useState<any>([])
     const [sliderProgress, setSliderProgress] = useState<string>("0")
+    const [progress, setProgress] = useState<number>(0)
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const timeFormatter = (time: string) : string => {
@@ -47,23 +47,31 @@ const Home: React.FC = () => {
             console.log(response);
 
             setDeviceList(response.devices)
-            if (!response.playing || !response.ok) {
-                setDelay(10000)
-            } else {
-                setCurrentPlaying(response.playing)
-                setSliderProgress((parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed())
-                setDelay(500)
-            }
+            setCurrentPlaying(response.playing)
+            setProgress(parseInt(response.playing.progress_ms))
+            setSliderProgress((progress /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(2))
+            
             if (userData) {
                 setIsLoading(false)
             }
         })
         .catch((error) => {
             console.log(error)
-            // document.location = "/"
         })
-    }, delay)
+    }, 10000)
 
+    useEffect(() => {
+        if (!currentPlaying?.is_playing || progress >= parseInt(currentPlaying.item?.duration_ms)) {
+            return
+        }
+        const interval = setInterval(() => {
+            setProgress(progress + 100)
+            setSliderProgress((progress /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(2))
+            
+        }, 100)
+        return () => clearInterval(interval)
+    })
+    
     // TODO: Loading spinner
     if (isLoading) {
         return <h1>Loading...</h1>
@@ -102,9 +110,9 @@ const Home: React.FC = () => {
                         <div className="slide-container">
                             
                             <p className="time">
-                                {timeFormatter(currentPlaying.progress_ms) }
+                                {timeFormatter(progress + "") }
                             </p>
-                            <input className='slider' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
+                            <input className='slider' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" step="0.1" min="1" max="100" value={ sliderProgress} /> 
 
                              <p className="time">
                                    { timeFormatter(currentPlaying.item?.duration_ms) }

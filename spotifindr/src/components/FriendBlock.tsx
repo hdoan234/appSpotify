@@ -8,6 +8,15 @@ import "./FriendBlock.css";
 const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
     const sliderProgress = (parseInt(currentPlaying?.progress_ms) /  parseInt(currentPlaying?.item?.duration_ms) * 100).toFixed()
     
+    const [progress, setProgress] = useState(currentPlaying?.progress_ms)
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setProgress(progress + 1000)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [progress])
+
     const timeFormatter = (time: string) : string => {
       return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
     }
@@ -21,11 +30,11 @@ const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
             </div>
             {/* TODO: Add design to each friend block */}
             {
-                currentPlaying || currentPlaying?.is_playing ?
+                currentPlaying && currentPlaying?.is_playing ?
                 <div className="friend-playing">
                     <div className="progress-slider">
                         <p className="time-friend">
-                            {timeFormatter(currentPlaying?.progress_ms) }
+                            {timeFormatter(progress + "") }
                         </p>
                         <input className='slider-friend' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
                         <p className="time-friend">

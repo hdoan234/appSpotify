@@ -23,7 +23,7 @@ const Home: React.FC = () => {
       const profile = userUtil.getUser();
       const search = userUtil.getAllUsers();
 
-    return { "follow": await follow, "profile": await profile, search: await search};
+    return { "follow": await follow, "profile": null, search: await search};
   }
 
   const searchHandler = (e: any) => {
