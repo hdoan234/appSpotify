@@ -27,8 +27,13 @@ export interface UserDataProps {
     uri: string;
 }
 export interface FollowUserProps {
-    name: string;
-    email: string;
-    spotifyId: string;
-    imageUrl: string;
+    ok: boolean,
+    userInfo: {
+        email: string,
+        name: string,
+        spotifyId: string,
+        imageUrl: string
+    },
+    playing: any | null
+    devices: any
   }

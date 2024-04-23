@@ -17,6 +17,15 @@ export const userPlayingState = async () : Promise<any> => {
     }
 };
 
+export const getPlayingStateById = async (id : string) : Promise<any> => {
+    try {
+        const res = await axios.get(`http://localhost:3000/api/playing/${id}`);
+        return res.data;
+    } catch (e : any) {
+        throw new Error('Error getting user playing state');
+    }
+};
+
 export const getCurrentFollow = async () : Promise<any> => {
     try {
         const res = await axios.get('http://localhost:3000/api/currentFollow');

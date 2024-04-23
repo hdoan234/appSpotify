@@ -4,15 +4,14 @@ import { useState, useEffect } from "react"
 import "./FriendBlock.css";
 
 
-const FriendBlock = ({children, url, key} : any) : any => {
-    const [currentPlaying, setCurrentPlaying] = useState<any | null>({})
-    const [deviceList, setDeviceList] = useState<any>([])
-    const [sliderProgress, setSliderProgress] = useState<string>("0")
 
+const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
+    const [sliderProgress, setSliderProgress] = useState<string>("0")
   
     const timeFormatter = (time: string) : string => {
       return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
-  }
+    }
+
     return (
         
         <div key={key} className="friend">
@@ -32,8 +31,8 @@ const FriendBlock = ({children, url, key} : any) : any => {
                     </p>
                 </div>
                 <p className="song-friend"> 
-                    <p>Song </p>
-                        <p className="artist">Artist </p>
+                    <p>Song: {currentPlaying.item.name} </p>
+                    <p className="artist">Artist: {currentPlaying.item.album.artists.map((artist : any, index: number) => index != currentPlaying.item.album.artists.length - 1 ? artist.name + " ," : artist.name)} </p>
                 </p>
 
                     <button type="button" className="join-button">Join</button>
