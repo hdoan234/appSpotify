@@ -170,7 +170,7 @@ app.get("/callback", async (req, res) => {
     "spotifyId": result.data.id,
   }
   
-  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token, access_token)
+  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token, access_token, result.data.images[2].url)
   else {
     await prisma.user.update({
       where: {
@@ -186,6 +186,7 @@ app.get("/callback", async (req, res) => {
   res.redirect("http://localhost:8100/")
 
 })
+
 
 app.get('/api/playing', async (req, res) => {
   if (!isAuthenticated(req)) {
@@ -334,9 +335,58 @@ app.get('/api/currentFollow', async (req, res) => {
     followerObj.push(account)
   }
 
+  let playingStates = userObj.map(async (user) => {
+    const getData = async (access_token) => {
+      try {
+        const profileRes = await axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
+          headers: {
+            'Authorization': `Bearer ${access_token}`
+          }
+        })
+
+  
+        return profileRes
+  
+      } catch (e) {
+        throw new Error(e.message)
+      }
+    }
+
+    try {
+      const profileRes = await getData(user.access_token)
+  
+      return {
+        "ok": true,
+        "userInfo": user,
+        "playing": profileRes.data,
+      }
+    } catch (e) {
+      
+      try {
+        const newToken = await refreshLogin(user.refresh_token, user.spotifyId)
+        const profileRes = await getData(newToken.access_token)
+    
+        return {
+          "ok": true,
+          "userInfo": user,
+          "playing": profileRes.data,
+        }
+      } catch (err) {
+        return {
+          "ok": false,
+          "userInfo": user,
+          "message": err.message
+        }
+      }
+  
+    }
+  })
+
+  playingStates = await Promise.all(playingStates)
+
   res.send({
     "ok": true,
-    "following": userObj,
+    "following": playingStates,
     "followers": followerObj
   })
 

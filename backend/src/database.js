@@ -3,12 +3,13 @@ import { Prisma } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function createAccountWithSpotify(email, spotifyId, displayName, refreshToken, accessToken) {
+export async function createAccountWithSpotify(email, spotifyId, displayName, refreshToken, accessToken, imageUrl) {
     const user = await prisma.user.create({
         data: {
             email: email,
             spotifyId: spotifyId,
             name: displayName,
+            imageUrl: imageUrl,
             refresh_token: refreshToken,
             access_token: accessToken
         }

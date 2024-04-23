@@ -7,8 +7,8 @@ async function test() {
 
     await prisma.follows.create({
         data: {
-            follower: { connect: { spotifyId: "31jok63smduw3muykfnjisywwx4m" } },
-            following: { connect: { spotifyId: "onhtthkqrf7den59fgzz57z5h" } }
+            followerId: "66280a60483c9b90ff5b665e",
+            followingId: "6627fd21daf760e992725c52"
         }
     })
 }
