@@ -20,7 +20,7 @@ const Page: React.FC = () => {
         const success = await auth.login(username, password)
 
         if (success) {
-            document.location = "/home"
+            document.location = "/"
         } else {
             alert("Invalid username or password")
         }

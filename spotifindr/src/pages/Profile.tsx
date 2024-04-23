@@ -14,6 +14,7 @@ const Home: React.FC = () => {
     const [currentPlaying, setCurrentPlaying] = useState<any | null>({})
     const [deviceList, setDeviceList] = useState<any>([])
     const [sliderProgress, setSliderProgress] = useState<string>("0")
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const timeFormatter = (time: string) : string => {
         return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
@@ -32,7 +33,6 @@ const Home: React.FC = () => {
             if (!data) {
                 document.location = "/"
             }
-
             setUserData(data)
         }).catch((error) => {
             console.log(error)
@@ -54,16 +54,25 @@ const Home: React.FC = () => {
                 setSliderProgress((parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed())
                 setDelay(500)
             }
+            if (userData) {
+                setIsLoading(false)
+            }
+        })
+        .catch((error) => {
+            console.log(error)
+            document.location = "/"
         })
     }, delay)
 
+    // TODO: Loading spinner
+    if (isLoading) {
+        return <h1>Loading...</h1>
+    }
     
     return (
         <IonPage>
         
             <IonContent fullscreen className="background">
-                {/* TODO: Add styling to these dynamic fields */}
-                
                 <div>
                     <div  style={{ color: "white" }}  className='name-block'>
                         <a href={userData?.uri}> 

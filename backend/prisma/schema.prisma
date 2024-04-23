@@ -24,6 +24,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   refresh_token String? @default("")
+  access_token  String? @default("")
 
   followers Follows[] @relation("FollowingRelation")
   following Follows[] @relation("FollowerRelation")

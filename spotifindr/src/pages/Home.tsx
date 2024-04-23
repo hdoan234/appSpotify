@@ -5,7 +5,6 @@ import { IonSearchbar } from '@ionic/react';
 
 import FriendBlock from '../components/FriendBlock';
 
-import axios from 'axios';
 import { FollowUserProps, UserDataProps } from '../type';
 import * as user from '../utils/user';
 
@@ -17,7 +16,6 @@ const Home: React.FC = () => {
   const fetchData = async() => {
       const follow = user.getCurrentFollow();
       const profile = user.getUser();
-    
 
     return { "follow": await follow, "profile": await profile };
   }
@@ -34,20 +32,27 @@ const Home: React.FC = () => {
   return (
     <IonPage>
       <IonContent fullscreen className="container" >
-      <div className="search-container" >
-        <IonSearchbar className="search-bar" ></IonSearchbar>
-        <img src={profile?.images[1].url} className="user" alt="avatar" /> 
-      </div>
       {
-        !isLoading ? 
-          <div style={{color: "white"}}>Loading...</div>
-        : <div className="friend-container">
-        { following?.map((follow) => <FriendBlock url={follow.imageUrl} key={follow.spotifyId} >{follow.name}</FriendBlock> )}
-        </div>
-   
-      }
+        // TODO: Add design to the loading screen, maybe a spinner component since we are going to reuse it
+        !isLoading ? <h1>Loading...</h1> :
+        <>
+        <div className="search-container" >
+          <IonSearchbar className="search-bar" ></IonSearchbar>
 
-        
+          <a href="/profile">
+            <img src={profile?.images[1].url} className="user" alt="avatar" /> 
+          </a>
+        </div>
+        {
+          // TODO: Add more styling to no following
+          following.length == 0 ? <h1 style={{textAlign: "center"}}>Oof... You're not following anyone</h1> :
+          <div className="friend-container">
+          { following?.map((follow) => <FriendBlock url={follow.imageUrl} key={follow.spotifyId} >{follow.name}</FriendBlock> )}
+          </div>
+        }
+        </>
+      }
+   
       </IonContent>
     </IonPage>
   );

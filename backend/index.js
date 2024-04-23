@@ -11,7 +11,7 @@ import { createAccountWithSpotify, getAccount, getFollowing, getAccountById, sen
 
 import { Server } from 'socket.io';
 import { createServer, get } from 'http';
-
+import session from 'express-session';
 import { PrismaClient } from '@prisma/client';
 
 const app = express();
@@ -23,6 +23,14 @@ app.use(cors({
 
 app.use(cookieParser());
 app.use(bodyParser.json())
+
+app.use(
+  session({
+    secret: 'keyboard cat',
+    resave: true,
+    saveUninitialized: false,
+  })
+)
 
 const httpServer = createServer(app)
 
@@ -42,13 +50,36 @@ httpServer.listen(3001, () => {
   console.log('Websocket is running on port 3001');
 })
 
+const prisma = new PrismaClient()
+
 const isAuthenticated = (req) => {
-  return Boolean(req.cookies.spot_access_token)
+  return Boolean(req.session.user)
+}
+
+const refreshLogin = async (refresh_token, id) => {
+
+  try {
+    const newToken = await getAccessTokenWithRefreshToken(refresh_token)
+    await prisma.user.update({
+      where: {
+        spotifyId: id
+      },
+      data: {
+        refresh_token: newToken.refresh_token,
+        access_token: newToken.access_token
+      }
+    })
+  
+    return newToken
+  } catch (e) {
+    throw new Error(e.message)
+  }
+
 }
 
 app.get('/api/getAuth', async (req, res) => {
-
   if (isAuthenticated(req)) {
+
     res.send({
       "ok": false,
       "message": "Already authenticated"
@@ -58,7 +89,7 @@ app.get('/api/getAuth', async (req, res) => {
 
   const { verifier, spotURL } = await redirectToAuth()
 
-  res.cookie('verifier', verifier, { httpOnly: true, maxAge: 1000 * 60 * 60 })
+  res.cookie('verifier', verifier, { httpOnly: true })
 
   res.send({
     ok: true,
@@ -67,9 +98,16 @@ app.get('/api/getAuth', async (req, res) => {
 })
 
 app.post('/api/credAuth', async (req, res) => {
+  if (isAuthenticated(req)) {
+    res.send({
+      "ok": false,
+      "message": "Already authenticated"
+    })
+    return
+  }
+
   const { username, password, type } = req.body
 
-  const prisma = new PrismaClient()
 
   if (!username || !password || !type) {
     res.send({
@@ -94,28 +132,11 @@ app.post('/api/credAuth', async (req, res) => {
       return
     }
 
-    const newToken = await getAccessTokenWithRefreshToken(account.refresh_token)
 
-  
-    res.cookie('spot_access_token', newToken.access_token, {
-      httpOnly: true
-    })
-    res.cookie('spot_refresh_token', newToken.refresh_token, {
-      httpOnly: true
-    })
-    res.cookie('spot_user_id', account.spotifyId, {
-      httpOnly: true
-    })
+    req.session.user = {
+      "spotifyId": account.spotifyId,
+    }
 
-    await prisma.user.update({
-      where: {
-        email: username
-      },
-      data: {
-        refresh_token: newToken.refresh_token
-      }
-    
-    })
 
     res.send({
       "ok": true,
@@ -137,14 +158,6 @@ app.get("/callback", async (req, res) => {
   const access_token = tokenObj.access_token
   const refresh_token = tokenObj.refresh_token
 
-  res.cookie('spot_access_token', access_token, { 
-    httpOnly: true,
-  })
-
-  res.cookie('spot_refresh_token', refresh_token, {
-    httpOnly: true
-  })
-
   const result = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
         'Authorization': `Bearer ${access_token}`
@@ -153,20 +166,19 @@ app.get("/callback", async (req, res) => {
 
   const account = await getAccount(result.data.id)
   
-  res.cookie('spot_user_id', result.data.id, {
-    httpOnly: true
-  })
+  req.session.user = {
+    "spotifyId": result.data.id,
+  }
   
-  const prisma = new PrismaClient()
-
-  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token)
+  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token, access_token)
   else {
     await prisma.user.update({
       where: {
         spotifyId: result.data.id
       },
       data: {
-        refresh_token: refresh_token
+        refresh_token: refresh_token,
+        access_token: access_token
       }
     })
   }
@@ -184,23 +196,70 @@ app.get('/api/playing', async (req, res) => {
     return
   }
 
-  const profileRes = await axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
-    headers: {
-      'Authorization': `Bearer ${req.cookies.spot_access_token}`
-    }
-  })
+  const user = await getAccount(req.session.user.spotifyId)
 
-  const devicesRes = await axios.get("https://api.spotify.com/v1/me/player/devices", {
-    headers: {
-      'Authorization': `Bearer ${req.cookies.spot_access_token}`
-    }
-  })
+  if (!user) {
+    res.status(401).send({
+      "ok": false,
+      "message": "User not found"
+    })
+    return
+  }
+  
 
-  res.send({
-    "ok": true,
-    "playing": profileRes.data,
-    "devices": devicesRes.data.devices
-  })
+  const getData = async (access_token) => {
+    try {
+      const profileRes = await axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
+        headers: {
+          'Authorization': `Bearer ${access_token}`
+        }
+      })
+
+      const devicesRes = await axios.get("https://api.spotify.com/v1/me/player/devices", {
+        headers: {
+          'Authorization': `Bearer ${access_token}`
+        }
+      })
+
+      return { profileRes, devicesRes }
+
+    } catch (e) {
+      throw new Error(e.message)
+    }
+  }
+
+  try {
+    const { profileRes, devicesRes } = await getData(user.access_token)
+
+    res.send({
+      "ok": true,
+      "playing": profileRes.data,
+      "devices": devicesRes.data.devices
+    })
+  } catch (e) {
+    
+    try {
+      const newToken = await refreshLogin(user.refresh_token, user.spotifyId)
+      const { profileRes, devicesRes } = await getData(newToken.access_token)
+  
+      res.send({
+        "ok": true,
+        "playing": profileRes.data,
+        "devices": devicesRes.data.devices
+      })
+    } catch (err) {
+      console.log(err.message)
+      req.session.destroy()
+      res.send({
+        "ok": false,
+        "message": err.message
+      })
+    }
+
+
+  }
+
+
 })
 
 app.get('/api/profile', async (req, res) => {
@@ -213,10 +272,12 @@ app.get('/api/profile', async (req, res) => {
     return
   }
 
+  const user = await getAccount(req.session.user.spotifyId)
+
   try {
     const result = await axios.get('https://api.spotify.com/v1/me', {
       headers: {
-        'Authorization': `Bearer ${req.cookies.spot_access_token}`
+        'Authorization': `Bearer ${user.access_token}`
       }
     })
     res.send({
@@ -224,11 +285,19 @@ app.get('/api/profile', async (req, res) => {
       "user": result.data
     })
   } catch (e) {
+    console.log("Token Refreshed for " + user.name)
+    const newToken = await refreshLogin(user.refresh_token, user.spotifyId)
+
+    const result = await axios.get('https://api.spotify.com/v1/me', {
+      headers: {
+        'Authorization': `Bearer ${newToken.access_token}`
+      }
+    })
+
     res.send({
       "ok": true,
-      "message": JSON.stringify(e),
+      "user": result.data
     })
-    return
   }
 
 })
@@ -242,9 +311,9 @@ app.get('/api/currentFollow', async (req, res) => {
     return
   }
 
-  const user = await getFollowing(req.cookies.spot_user_id)
+  const user = await getFollowing(req.session.user.spotifyId)
 
- if (!user || !user.following) {
+  if (!user || !user.following) {
     res.send({
       "ok": false,
       "message": "User not found"

@@ -13,7 +13,7 @@ export const userPlayingState = async () : Promise<any> => {
         const res = await axios.get('http://localhost:3000/api/playing');
         return res.data;
     } catch (e : any) {
-        alert(e.message)
+        throw new Error('Error getting user playing state');
     }
 };
 
