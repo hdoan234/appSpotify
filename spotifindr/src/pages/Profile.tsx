@@ -2,14 +2,10 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { useState, useEffect } from "react"
 import { useInterval } from 'usehooks-ts';
 import { peopleOutline } from 'ionicons/icons';
-import axios from 'axios';
 
 import './Profile.css';
-import { time } from 'ionicons/icons';
 
-import { io } from "socket.io-client";
-const socket = io("ws://localhost:3001");
-
+import * as user from '../utils/user'; 
 import { UserDataProps } from '../type';
 
 const Home: React.FC = () => {
@@ -31,15 +27,13 @@ const Home: React.FC = () => {
             document.body.appendChild(script);
         }
 
-        axios.get("http://localhost:3000/api/profile", {
-            withCredentials: true,
-        })
-        .then((response) => {
-            if (!response.data.ok) {
+        user.getUser()
+        .then((data) => {
+            if (!data) {
                 document.location = "/"
             }
 
-            setUserData(response.data.data)
+            setUserData(data)
         }).catch((error) => {
             console.log(error)
             document.location = "/"
@@ -48,14 +42,15 @@ const Home: React.FC = () => {
     }, [])
 
     useInterval(() => {
-        axios.get("http://localhost:3000/api/playing", {
-            withCredentials: true,
-        }).then(response => {
-            setDeviceList(response.data["devices"])
-            if (!response.data.playing && response.data.ok) {
+        user.userPlayingState()
+        .then(response => {
+            console.log(response);
+
+            setDeviceList(response.devices)
+            if (!response.playing && response.data.ok || !response.ok) {
                 setDelay(10000)
             } else {
-                setCurrentPlaying(response.data["playing"])
+                setCurrentPlaying(response.playing)
                 setSliderProgress((parseInt(currentPlaying.progress_ms) /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed())
                 setDelay(500)
             }
@@ -88,10 +83,10 @@ const Home: React.FC = () => {
                     </div>
                 </div>
                 {
-                currentPlaying ?
+                currentPlaying &&
                 <div>
                     <div className="album-image"> 
-                        <img  style={{width: "70%", borderRadius: "8%", maxWidth: "600px"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
+                        <img  style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
                         <p className="title">{currentPlaying.item?.name } </p>
                         <p style={{fontSize:"0.7rem"}}>{ currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ", "}`) }
                         </p>
@@ -108,10 +103,7 @@ const Home: React.FC = () => {
                         </div>
                     </div>
                 </div>
-                : ""
                 }
-                
-                
 
                 <select className='devices'>
                     <option value="">Select a device</option>

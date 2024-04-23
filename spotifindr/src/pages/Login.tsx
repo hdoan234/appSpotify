@@ -1,12 +1,12 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 import { lockClosedOutline, personOutline } from 'ionicons/icons';
-import ExploreContainer from '../components/ExploreContainer';
+import * as auth from '../utils/auth';
+
 import './Login.css';
 
-import axios from 'axios';
 
 const Page: React.FC = () => {
 
@@ -17,37 +17,15 @@ const Page: React.FC = () => {
     const handleSubmit = async (e : any) : Promise<void> => {
         e.preventDefault()
 
-        const response = await axios.post("http://localhost:3000/api/credAuth", {
-            "username": username,
-            "password": password,
-            "type": login
-        }, {
-            headers: {
-                "Content-Type": "application/json"
-            },
-            withCredentials: true
-        })
+        const success = await auth.login(username, password)
 
-
-        if (response.data.ok) {
+        if (success) {
             document.location = "/home"
+        } else {
+            alert("Invalid username or password")
         }
     }
 
-    const spotAuthHandler = async () : Promise<void> => {
-        const response = await axios.get("http://localhost:3000/api/getAuth", {
-            withCredentials: true,
-        })
-
-        console.log(response.data)
-        if (!response.data.ok) {
-            alert(response.data.message)
-            document.location = "/home"
-            return
-        }
-
-        document.location = response.data.spotURL
-    }
   return (
     <IonPage>
       <IonContent fullscreen className="container">
@@ -77,45 +55,34 @@ const Page: React.FC = () => {
                 </div>  
 
                 {
-                    login == "register" ?
-                    (
+                    login == "register" &&
                     <div className="input-container">
                         <div className='icon-container'>
                             <IonIcon icon={lockClosedOutline} />    
                         </div>   
                         <input className="input-field" type="password" name="confirm_password" placeholder='Confirm Password'/>
                     </div>
-                    )
-                    : ""
                 }
                 {
-                    login == "login" ?
-                    (
+                    login == "login" &&
                         <a className="forgot-password" href="#">Forgot password?</a>
-                    )
-                    : ""
                 }
                 
                 
                 <input type="submit" value={login == "login" ? "Login" : "Sign up"}/> 
             </form>
                 {
-                    login == "login" ?
-                    (
-                        <button id="spotify" onClick={spotAuthHandler}>Login with <i className="fa fa-spotify" id="logo"></i></button>
-                    )
-                    : ""
+                    login == "login" &&
+                        <button id="spotify" onClick={auth.loginWithSpotify}>Login with <i className="fa fa-spotify" id="logo"></i></button>
                 }
         </div>
+        <div id="changeState">
         {
         login == "login" ?  
-            <div id="changeState">
-                Don't have an account - <a onClick={() => setLogin("register")}>Create account</a>
-            </div>
-        :   <div id="changeState">
-                Already have an account - <a onClick={() => setLogin("login")}>Log in</a>
-            </div>
+                <>Don't have an account - <a onClick={() => setLogin("register")}>Create account</a></>
+                : <>Already have an account - <a onClick={() => setLogin("login")}>Log in</a></>
         }
+        </div>
       </IonContent>
     </IonPage>
   );

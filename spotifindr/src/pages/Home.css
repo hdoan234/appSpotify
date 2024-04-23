@@ -16,12 +16,11 @@
     border-radius: 50%;
     height: 8vw;
     width: 8vw;
+    max-width: 70px;
+    max-height: 70px;
     object-fit: cover;
 }
-.user-ava-container {
-    height: 8vw;
-    width: 8vw;
-}
+
 .friend-container{
     display: flex;
     flex-direction: column;

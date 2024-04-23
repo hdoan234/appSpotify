@@ -49,6 +49,7 @@ ion-content {
     flex-direction: column;
     margin-left: 5%;
 }
+
 .album-image{
     display: flex;
     align-items: center;

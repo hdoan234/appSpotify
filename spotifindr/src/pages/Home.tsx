@@ -7,34 +7,26 @@ import FriendBlock from '../components/FriendBlock';
 
 import axios from 'axios';
 import { FollowUserProps, UserDataProps } from '../type';
+import * as user from '../utils/user';
 
 const Home: React.FC = () => {
   const [following, setFollowing] = useState<FollowUserProps[]>([]);
   const [profile, setProfile] = useState<UserDataProps>();
   const [isLoading, setIsLoading] = useState(false);
-  const [currentPlaying, setCurrentPlaying] = useState<any | null>({})
 
-  const timeFormatter = (time: string) : string => {
-    return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
-}
-  
   const fetchData = async() => {
-      const follow = await axios.get("http://localhost:3000/api/currentFollow", {
-        withCredentials: true,
-      })
-      const profile = await axios.get("http://localhost:3000/api/profile", {
-        withCredentials: true,
-      })
+      const follow = user.getCurrentFollow();
+      const profile = user.getUser();
     
-  
 
-    return { "follow": follow, "profile": profile };
+    return { "follow": await follow, "profile": await profile };
   }
 
   useEffect(() => {
     fetchData().then((data) => {
-      setFollowing(data.follow.data.following)
-      setProfile(data.profile.data.data)
+      setFollowing(data.follow.following)
+      setProfile(data.profile)
+
     }).then(() => setIsLoading(true))
   }, [])
 
@@ -44,9 +36,7 @@ const Home: React.FC = () => {
       <IonContent fullscreen className="container" >
       <div className="search-container" >
         <IonSearchbar className="search-bar" ></IonSearchbar>
-        <a className='user-ava-container' href="/profile"> 
-            <img src={profile?.images[0].url} className="user" alt="avatar" /> 
-        </a>
+        <img src={profile?.images[1].url} className="user" alt="avatar" /> 
       </div>
       {
         !isLoading ? 

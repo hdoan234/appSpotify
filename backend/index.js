@@ -96,11 +96,14 @@ app.post('/api/credAuth', async (req, res) => {
 
     const newToken = await getAccessTokenWithRefreshToken(account.refresh_token)
 
-
+  
     res.cookie('spot_access_token', newToken.access_token, {
       httpOnly: true
     })
     res.cookie('spot_refresh_token', newToken.refresh_token, {
+      httpOnly: true
+    })
+    res.cookie('spot_user_id', account.spotifyId, {
       httpOnly: true
     })
 
@@ -218,7 +221,7 @@ app.get('/api/profile', async (req, res) => {
     })
     res.send({
       "ok": true,
-      "data": result.data
+      "user": result.data
     })
   } catch (e) {
     res.send({

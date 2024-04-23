@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import { Prisma } from '@prisma/client'
 
+const prisma = new PrismaClient()
+
 export async function createAccountWithSpotify(email, spotifyId, displayName, refreshToken) {
-    const prisma = new PrismaClient()
-    
     const user = await prisma.user.create({
         data: {
             email: email,
@@ -15,8 +15,6 @@ export async function createAccountWithSpotify(email, spotifyId, displayName, re
 }
 
 export async function getAccount(spotifyId) {
-    const prisma = new PrismaClient()
-
     const user = await prisma.user.findUnique({
         where: {
             spotifyId: spotifyId
@@ -29,8 +27,6 @@ export async function getAccount(spotifyId) {
 
 
 export async function getAccountById(id) {
-    const prisma = new PrismaClient()
-
     const user = await prisma.user.findUnique({
         where: {
             id: id
@@ -42,7 +38,7 @@ export async function getAccountById(id) {
 }
 
 export async function getFollowing(spotifyId) {
-    const prisma = new PrismaClient()
+    if (!spotifyId) throw new Error('No spotifyId provided')
 
     const user = await prisma.user.findUnique({
         where: {
@@ -58,8 +54,6 @@ export async function getFollowing(spotifyId) {
 }
 
 export async function sendFollow(fromId, toId) {
-    const prisma = new PrismaClient()
-
     try {
         await prisma.follows.create({
             data: {
