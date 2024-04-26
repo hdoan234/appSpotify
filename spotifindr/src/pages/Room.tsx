@@ -1,10 +1,12 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react";
-import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline } from 'ionicons/icons';
+import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline, radioOutline } from 'ionicons/icons';
 import axios from 'axios';
 
 import './Room.css';
 import { FollowUserProps, UserDataProps } from '../type';
+import * as userUtil from '../utils/userUtil';
+
 
 const Home: React.FC = () => {
   
@@ -13,23 +15,57 @@ const Home: React.FC = () => {
     const [profile, setProfile] = useState<UserDataProps>();
     const [isLoading, setIsLoading] = useState(false);
   
+     useEffect(() => {
+        // Function to retrieve follower songs
+        const getFollowerSongs = async () => {
+            const followerSongsData = [];
+            for (const follower of following) {
+                // Retrieve currently playing track for each follower
+                const response = await axios.get(`http://localhost:3000/api/playing/`);
+                followerSongsData.push(response.data);
+            }
+            setCurrentPlaying(followerSongsData);
+        };
+
+        // Fetch followers from your backend or other source
+        const fetchFollowers = async () => {
+            // Fetch followers from your backend or other source
+            const response = await axios.get('http://localhost:3000/api/currentFollow');
+            setFollowing(response.data);
+        };
+
+        // Fetch followers and their currently playing songs
+        fetchFollowers();
+        getFollowerSongs();
+    }, []);
     return(
         <IonPage>
             <IonContent fullscreen className='background'>
-                <div>
-                    <IonIcon icon={listOutline} className="room-icon"/>
+                <div className="header-icon">
+                    <IonIcon icon={listOutline} className="list-icon"/>
                     <IonIcon icon={searchOutline} className="search-icon"/>
                 </div>
  
                 <div className="room">
-                        {/*<IonIcon icon={} className="room-icon"/>*/}
-                        <p>Room</p>
+                        <div className='room-name'>
+                        <IonIcon icon={radioOutline} className="room-icon"/>
+                        <p style={{padding:"3px"}}>Friend's Room</p>
+                        </div>
                 </div>
                 <div className='cover-artist'>
-                    <img  style={{width: "70%", borderRadius: "8%", maxWidth: "600px"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
-                    <p style={{fontSize:"20px"}}>Song</p>
-                    <p style={{fontSize:"15px"}}>Artist</p>
+                    {currentPlaying.item && (
+                        <>
+                            <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src="{currentPlaying.item.album.images[0].url}" alt="" />
+                            <p className="title">{currentPlaying.item.name}</p>
+                            <p style={{fontSize: "0.7rem"}}>
+                                {currentPlaying.item.artists.map((artist: any, index: number) => (
+                                    `${artist.name}${index === currentPlaying.item.artists.length - 1 ? "" : ", "}`
+                                ))}
+                            </p>
+                        </>
+                    )}
                 </div>
+
 
                 <div className="playing-icons">
                     <IonIcon icon={shuffleOutline} className="shuffle-icon"/>

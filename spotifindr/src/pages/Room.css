@@ -1,6 +1,6 @@
 .room{
+    position: relative;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
     height: 5vh;
@@ -9,10 +9,49 @@
     color: white;
     margin-top: 2vh;
     border-radius: 15px;
+    margin: auto;
 }
+.room-name{
+    font-size: 15px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: auto;
+    display: flex;
+    margin:0;
+    
+}
+.room-icon{
+    color: white;
+    font-size: 3vh;
+    margin-right:5px;
+    
+}
+.search-icon{
+    color: white;
+    height: 5vh;
+    width:5vw;
+    right: 0px;
+    margin-right: 4%;
+    
+}
+.list-icon{
+    color:white;
+    height: 5vh;
+    width:5vw;
+}
+
 .background{
     --background: linear-gradient(164deg, rgba(0,0,0,1) 18%,rgba(109,251,165,1) 100%);
+   }
+.header-icon{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    margin-top: 2vh;
+    margin-left: -35%;
 }
+
 .album-cover{
     border-radius: 10%;
     margin-left: 10px;
@@ -24,9 +63,12 @@
 .playing-icon{
     display: flex; 
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
     padding: 5px;
     width: 10vw;
     height: 10vh;
+    
 }
 .queue-album{
     display: flex;
@@ -39,4 +81,14 @@
     border-radius: 10px;
     width: 90vw;
     height: 20vh;
+}
+.shuffle-icon, .heart-icon, .add-icon{
+    color: white;
+    padding: 5px;
+    font-size: 25px;
+    width: 5vw;
+    height: 5vh;
+}
+.friend-playing{
+    
 }

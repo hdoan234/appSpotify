@@ -42,8 +42,8 @@ const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
                         </p>
                     </div>
                     <p className="song-friend"> 
-                        <p>Song: {currentPlaying.item.name} </p>
-                        <p className="artist">Artist: {currentPlaying?.item?.album.artists.map((artist : any, index: number) => index != currentPlaying.item.album.artists.length - 1 ? artist.name + " ," : artist.name)} </p>
+                        <p> {currentPlaying.item.name} </p>
+                        <p className="artist"> {currentPlaying?.item?.album.artists.map((artist : any, index: number) => index != currentPlaying.item.album.artists.length - 1 ? artist.name + " ," : artist.name)} </p>
                     </p>
 
                         <button type="button" className="join-button">Join</button>
