@@ -1,12 +1,14 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react";
-import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline } from 'ionicons/icons';
+import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline, radioOutline } from 'ionicons/icons';
 import axios from 'axios';
 
 import socket from '../websocket';
 
 import './Room.css';
 import { FollowUserProps, UserDataProps } from '../type';
+import * as userUtil from '../utils/userUtil';
+
 
 import { useParams } from 'react-router';
 
@@ -38,20 +40,32 @@ const Home: React.FC = () => {
     return(
         <IonPage>
             <IonContent fullscreen className='background'>
-                <div>
-                    <IonIcon icon={listOutline} className="room-icon"/>
+                <div className="header-icon">
+                    <IonIcon icon={listOutline} className="list-icon"/>
                     <IonIcon icon={searchOutline} className="search-icon"/>
                 </div>
  
                 <div className="room">
-                        {/*<IonIcon icon={} className="room-icon"/>*/}
-                        <p>Room</p>
+                        <div className='room-name'>
+                        <IonIcon icon={radioOutline} className="room-icon"/>
+                        <p style={{padding:"3px"}}>Friend's Room</p>
+                        </div>
                 </div>
                 <div className='cover-artist'>
-                    <img  style={{width: "70%", borderRadius: "8%", maxWidth: "600px"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
-                    <p style={{fontSize:"20px"}}>Song</p>
-                    <p style={{fontSize:"15px"}}>Artist</p>
+                    {currentPlaying.item && (
+                        <>
+                            <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src="{currentPlaying.item.album.images[0].url}" alt="" />
+                            <p className="title">{currentPlaying.item.name}</p>
+                            <p style={{fontSize: "0.7rem"}}>
+                                {currentPlaying.item.artists.map((artist: any, index: number) => (
+                                    `${artist.name}${index === currentPlaying.item.artists.length - 1 ? "" : ", "}`
+                                ))}
+                            </p>
+                        </>
+                    )}
                 </div>
+
+
                 <div className="playing-icons">
                     <IonIcon icon={shuffleOutline} className="shuffle-icon"/>
                     <IonIcon icon={heartOutline} className="heart-icon"/>
