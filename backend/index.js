@@ -44,6 +44,11 @@ const io = new Server(httpServer, {
 
 io.on('connection', (socket) => {
   socket.emit("greet", "Hello from server")
+  
+  socket.on('join', (data) => {
+    console.log(data)
+  })
+
 })
 
 httpServer.listen(3001, () => {

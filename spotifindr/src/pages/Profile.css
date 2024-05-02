@@ -135,12 +135,12 @@ cursor: pointer;
 }
 .bg-css-group-enter-active {
     opacity: 1;
-    transition: opacity 500ms;
+    transition: opacity 1000ms;
 }
 .bg-css-group-exit {
     opacity: 1;
 }
 .bg-css-group-exit-active {
-    opacity: 0.1;
-    transition: opacity 500ms;
+    opacity: 0;
+    transition: opacity 2000ms;
 }

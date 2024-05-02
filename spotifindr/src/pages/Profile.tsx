@@ -103,12 +103,11 @@ const Home: React.FC = () => {
         <IonPage>
         
             <IonContent fullscreen className="background">
-                { currentPlaying && 
-
+                { currentPlaying && currentPlaying.item.album.images[1].url &&
                     <TransitionGroup>
                         <CSSTransition
                             key={currentPlaying.item.album.images[1].url}
-                            timeout={500}
+                            timeout={4000}
                             classNames="bg-css-group"
                         >
                             <div id="bg-pic">
