@@ -13,6 +13,25 @@ ion-content {
     font-size: 25px;
     text-align: center;
 }
+
+#bg-pic {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1;
+    transform: scaleY(-1);
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#bg-overlay {
+    height: 120vh;
+    width: 130vw;
+    filter: blur(50px)
+}
+
 .more-info{
     display: flex;
     justify-content: left;
@@ -109,4 +128,19 @@ cursor: pointer;
 .devices{
     display: flex;
     justify-content: right;
+}
+
+.bg-css-group-enter {
+    opacity: 0.1;
+}
+.bg-css-group-enter-active {
+    opacity: 1;
+    transition: opacity 500ms;
+}
+.bg-css-group-exit {
+    opacity: 1;
+}
+.bg-css-group-exit-active {
+    opacity: 0.1;
+    transition: opacity 500ms;
 }

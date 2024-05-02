@@ -2,9 +2,9 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { useState, useEffect } from "react"
 import { useInterval } from 'usehooks-ts';
 import { peopleOutline } from 'ionicons/icons';
-
+import { useSpring, animated } from '@react-spring/web';
 import './Profile.css';
-
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 import * as userUtil from '../utils/userUtil'; 
 import { UserDataProps } from '../type';
 
@@ -79,20 +79,46 @@ const Home: React.FC = () => {
             setSliderProgress((progress /  parseInt(currentPlaying.item?.duration_ms) * 100).toFixed(2))
             
         }, 100)
+
         return () => clearInterval(interval)
     }, [progress, currentPlaying])
+
+    useEffect(() => {
+
+        setAnimation({ opacity: currentPlaying?.item?.album.images[1].url ? 1 : 0 , config: { duration: 1000 } })
+    }, [currentPlaying])
+
+    const [ animation, setAnimation ] = useSpring(() => ({
+        to: { opacity: currentPlaying?.item?.album.images[1].url ? 1 : 0},
+        from: { opacity: 0 },
+    }))
     
     // TODO: Loading spinner
     if (isLoading) {
         return <h1>Loading...</h1>
     }
     
+
     return (
         <IonPage>
         
             <IonContent fullscreen className="background">
+                { currentPlaying && 
+
+                    <TransitionGroup>
+                        <CSSTransition
+                            key={currentPlaying.item.album.images[1].url}
+                            timeout={500}
+                            classNames="bg-css-group"
+                        >
+                            <div id="bg-pic">
+                                <img id="bg-overlay" src={currentPlaying.item.album.images[1].url} />
+                            </div>
+                        </CSSTransition>
+                    </TransitionGroup>
+                }
                 <div>
-                    <div  style={{ color: "white" }}  className='name-block'>
+                    <div style={{ color: "white" }}  className='name-block'>
                         <a href={userData?.uri}> 
                             <img src={userData?.images[1]?.url} className="ava" alt="avatar" /> 
                         </a>

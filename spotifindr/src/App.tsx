@@ -5,6 +5,7 @@ import Menu from './components/Menu';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
+import Room from './pages/Room';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -50,6 +51,7 @@ const App: React.FC = () => {
             <Route path="/" exact={true} render={() => authenticated ? <Profile /> : <Login />} />
             <Route path="/home" exact={true} render={() => authenticated ? <Home /> : <Login />} />
             <Route path="/profile" exact={true} render={() => authenticated ? <Profile /> : <Login />} />
+            <Route path="/room/:roomId" exact={true} render={() => authenticated ? <Room /> : <Login />} />
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

@@ -3,16 +3,38 @@ import { useState, useEffect } from "react";
 import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline } from 'ionicons/icons';
 import axios from 'axios';
 
+import socket from '../websocket';
+
 import './Room.css';
 import { FollowUserProps, UserDataProps } from '../type';
 
+import { useParams } from 'react-router';
+
 const Home: React.FC = () => {
-  
+    
     const [currentPlaying, setCurrentPlaying] = useState<any | null>({});
     const [following, setFollowing] = useState<FollowUserProps[]>([]);
     const [profile, setProfile] = useState<UserDataProps>();
     const [isLoading, setIsLoading] = useState(false);
   
+    const { roomId } : { roomId : string } = useParams()
+
+    const sendGreet = () => {
+        socket.emit('greet', 'Hello from the client side')
+    }
+
+    useEffect(() => {
+        socket.connect()
+
+
+        socket.on('greet', (data) => console.log(data))
+        socket.emit('join', { room: roomId })
+
+        return () => {
+            socket.disconnect()
+        }
+    }, [])
+
     return(
         <IonPage>
             <IonContent fullscreen className='background'>
@@ -30,7 +52,6 @@ const Home: React.FC = () => {
                     <p style={{fontSize:"20px"}}>Song</p>
                     <p style={{fontSize:"15px"}}>Artist</p>
                 </div>
-
                 <div className="playing-icons">
                     <IonIcon icon={shuffleOutline} className="shuffle-icon"/>
                     <IonIcon icon={heartOutline} className="heart-icon"/>
