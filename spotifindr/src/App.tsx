@@ -33,10 +33,25 @@ import axios from 'axios';
 setupIonicReact();
 
 import { checkAuth } from './utils/auth';
+import { a } from '@react-spring/web';
+
+const PrivateRoute = ({ component: Component, authenticated, ...rest } : any) =>{
+  return <Route {...rest} render={(props) => {
+      if (authenticated === undefined) {
+          return <div>Loading...</div>
+      }
+
+      if (authenticated) {
+          return <Component {...props} />
+      }
+      
+      return <Login />
+  }} />
+}
 
 const App: React.FC = () => {
 
-  const [authenticated, setAuthenticated] = useState(false)
+  const [authenticated, setAuthenticated] = useState<boolean>()
 
   useEffect(() => {
     checkAuth().then((response) => {
@@ -49,10 +64,12 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonSplitPane contentId="main">
           <IonRouterOutlet id="main">
-            <Route path="/" exact={true} render={() => authenticated ? <Profile /> : <Login />} />
-            <Route path="/home" exact={true} render={() => authenticated ? <Home /> : <Login />} />
-            <Route path="/profile" exact={true} render={() => authenticated ? <Profile /> : <Login />} />
-            <Route path="/room/:roomId" exact={true} render={() => authenticated ? <Room /> : <Login />} />
+  
+            <PrivateRoute path="/" exact authenticated={authenticated} component={Home} />
+            <PrivateRoute path="/home" exact authenticated={authenticated} component={Home} />
+            <PrivateRoute path="/profile" exact authenticated={authenticated} component={Profile} />
+            <PrivateRoute path="/room/:roomId" exact authenticated={authenticated} component={Room} />
+
           </IonRouterOutlet>
         </IonSplitPane>
       </IonReactRouter>

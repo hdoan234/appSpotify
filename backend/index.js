@@ -61,6 +61,16 @@ const isAuthenticated = (req) => {
   return Boolean(req.session.user)
 }
 
+const authMiddleware = (req, res, next) => {
+  if (isAuthenticated(req)) {
+    // User is authenticated, proceed to the next middleware or route handler
+    next()
+  } else {
+    // User is not authenticated, respond with an error
+    res.status(401).json({ error: 'Unauthorized' })
+  }
+}
+
 const refreshLogin = async (refresh_token, id) => {
 
   try {
@@ -193,14 +203,7 @@ app.get("/callback", async (req, res) => {
 })
 
 
-app.get('/api/playing', async (req, res) => {
-  if (!isAuthenticated(req)) {
-    res.status(401).send({
-      "ok": false,
-      "message": "Not authenticated"
-    })
-    return
-  }
+app.get('/api/playing', authMiddleware, async (req, res) => {
 
   const user = await getAccount(req.session.user.spotifyId)
 
@@ -268,15 +271,7 @@ app.get('/api/playing', async (req, res) => {
 
 })
 
-app.get('/api/profile', async (req, res) => {
-
-  if (!isAuthenticated(req)) {
-    res.status(401).send({
-      "ok": false,
-      "message": "Not authenticated"
-    })
-    return
-  }
+app.get('/api/profile', authMiddleware, async (req, res) => {
 
   const user = await getAccount(req.session.user.spotifyId)
 
@@ -308,14 +303,7 @@ app.get('/api/profile', async (req, res) => {
 
 })
 
-app.get('/api/currentFollow', async (req, res) => {
-  if (!isAuthenticated(req)) {
-    res.status(401).send({
-      "ok": false,
-      "message": "Not authenticated"
-    })
-    return
-  }
+app.get('/api/currentFollow', authMiddleware, async (req, res) => {
 
   const user = await getFollowing(req.session.user.spotifyId)
 
@@ -405,14 +393,7 @@ app.get('/api/allUsers', async (req, res) => {
   res.send(users)
 })
 
-app.get("/api/sendFollow", async (req, res) => {
-  if (!isAuthenticated(req)) {
-    res.status(401).send({
-      "ok": false,
-      "message": "Not authenticated"
-    })
-    return
-  }
+app.get("/api/sendFollow", authMiddleware, async (req, res) => {
 
   const { toId } = req.query
   if (!toId) {
