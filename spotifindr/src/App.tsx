@@ -1,6 +1,6 @@
 import { IonApp, IonRouterOutlet, IonSplitPane, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, RouteProps } from 'react-router-dom';
 import Menu from './components/Menu';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -34,6 +34,7 @@ setupIonicReact();
 
 import { checkAuth } from './utils/auth';
 import { a } from '@react-spring/web';
+
 
 const PrivateRoute = ({ component: Component, authenticated, ...rest } : any) =>{
   return <Route {...rest} render={(props) => {

@@ -1,5 +1,5 @@
 import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useInterval } from 'usehooks-ts';
 import { peopleOutline } from 'ionicons/icons';
 import { useSpring, animated } from '@react-spring/web';
@@ -15,13 +15,15 @@ const Home: React.FC = () => {
     const [sliderProgress, setSliderProgress] = useState<string>("0")
     const [progress, setProgress] = useState<number>(0)
     const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [show, setShow] = useState<boolean>(false)
 
     const timeFormatter = (time: string) : string => {
         return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
     }
 
-    useEffect(() => {
+    const nodeRef = useRef(null);
 
+    useEffect(() => {
         if (!document.getElementById("spotify-script")) {
             const script = document.createElement('script');
             script.id = "spotify-script";
@@ -51,13 +53,13 @@ const Home: React.FC = () => {
 
             setIsLoading(false)
         })
+
     }, [])
 
     useInterval(() => {
         userUtil.userPlayingState()
         .then(response => {
             console.log(response);
-
             setDeviceList(response.devices)
             setCurrentPlaying(response.playing)
             setProgress(parseInt(response.playing.progress_ms))
@@ -83,16 +85,6 @@ const Home: React.FC = () => {
         return () => clearInterval(interval)
     }, [progress, currentPlaying])
 
-    useEffect(() => {
-
-        setAnimation({ opacity: currentPlaying?.item?.album.images[1].url ? 1 : 0 , config: { duration: 1000 } })
-    }, [currentPlaying])
-
-    const [ animation, setAnimation ] = useSpring(() => ({
-        to: { opacity: currentPlaying?.item?.album.images[1].url ? 1 : 0},
-        from: { opacity: 0 },
-    }))
-    
     // TODO: Loading spinner
     if (isLoading) {
         return <h1>Loading...</h1>
@@ -107,8 +99,14 @@ const Home: React.FC = () => {
                     <TransitionGroup>
                         <CSSTransition
                             key={currentPlaying.item.album.images[1].url}
-                            timeout={4000}
+                            timeout={5000}
                             classNames="bg-css-group"
+                            onEnter={() => console.log("enter")}
+                            onExit={() => console.log("exit")}
+                            onEntered={() => console.log("entered")}
+                            onExited={() => console.log("exited")}
+                            unmountOnExit
+                            appear
                         >
                             <div id="bg-pic">
                                 <img id="bg-overlay" src={currentPlaying.item.album.images[1].url} />
