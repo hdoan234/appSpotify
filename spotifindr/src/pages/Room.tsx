@@ -18,18 +18,22 @@ const Home: React.FC = () => {
     const [following, setFollowing] = useState<FollowUserProps[]>([]);
     const [profile, setProfile] = useState<UserDataProps>();
     const [isLoading, setIsLoading] = useState(false);
-  
+    const [player, setPlayer] = useState<any | null>(null);
+
+    const [msg, setMsg] = useState('');
+
     const { roomId } : { roomId : string } = useParams()
 
-    const sendGreet = () => {
-        socket.emit('greet', 'Hello from the client side')
+    const sendMessage = () => {
+        console.log(msg)
+        socket.emit('sendMessage', { room: roomId, message: msg })
     }
 
     useEffect(() => {
         socket.connect()
 
-
         socket.on('greet', (data) => console.log(data))
+        socket.on('newMessage', (data) => console.log(data))
         socket.emit('join', { room: roomId })
 
         return () => {
@@ -71,6 +75,8 @@ const Home: React.FC = () => {
                     <IonIcon icon={heartOutline} className="heart-icon"/>
                     <IonIcon icon={addCircleOutline} className="add-icon"/> 
                 </div>
+                <input type="text" onChange={(e) => setMsg(e.target.value)} />
+                <button onClick={sendMessage}>Send</button>
                 <div className="queue-album">
 
                 </div>

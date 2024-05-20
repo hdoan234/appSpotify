@@ -69,7 +69,8 @@ const App: React.FC = () => {
             <PrivateRoute path="/" exact authenticated={authenticated} component={Home} />
             <PrivateRoute path="/home" exact authenticated={authenticated} component={Home} />
             <PrivateRoute path="/profile" exact authenticated={authenticated} component={Profile} />
-            <PrivateRoute path="/room/:roomId" exact authenticated={authenticated} component={Room} />
+            {/* <PrivateRoute path="/room/:roomId" exact authenticated={authenticated} component={Room} /> */}
+            <Route path="/room/:roomId" exact component={Room} />
 
           </IonRouterOutlet>
         </IonSplitPane>

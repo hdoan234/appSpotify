@@ -46,7 +46,25 @@ io.on('connection', (socket) => {
   socket.emit("greet", "Hello from server")
   
   socket.on('join', (data) => {
-    console.log(data)
+    console.log(data.room)
+    socket.join(data.room)
+    io.to(data.room).emit('joined', data.room)
+    console.log(io.sockets.adapter.rooms.get(data.room))
+  })
+
+  socket.on('sendMessage', (data) => {
+    console.log(data.message)
+    socket.to(data.room).emit('newMessage', data.message)
+  })
+
+  socket.on('createRoom', (data) => {
+    //  generate a random room id
+    const roomId = Math.random().toString(36).substring(7)
+    rooms[roomId] = {
+      users: []
+    }
+    socket.join(roomId)
+    console.log(io.sockets.adapter.rooms)
   })
 
 })
@@ -197,6 +215,7 @@ app.get("/callback", async (req, res) => {
       }
     })
   }
+
 
   res.redirect("http://localhost:8100/")
 
