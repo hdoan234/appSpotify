@@ -2,13 +2,17 @@
     width: 10vh;
     height:10vh;
     border-radius: 10%;
-    margin-left: 10px;
     display: flex;
 }
 .friend-name{
-    font-size: 15px;
+    font-size: 2vh;
     align-items: center;
     color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    color: white;
+    padding-top: 1vh;
 }
 .friend{
     display: flex;
@@ -29,9 +33,10 @@
 .friend-content{
     display: flex;
     flex-direction: column;
-    margin-top: 2vh;
     color: black;
     align-items: center;
+    width: 20vw;
+    justify-content: center;
 }
 .friend-playing{
     display: flex;
@@ -39,13 +44,11 @@
     margin: 1vh;
     color: black;
     border-radius: 10px;
-    width: 85%;
+    width: 100%;
     align-items: right;
     justify-content: space-between;
     padding: 10px;
-    
 }
-
 .song-friend{
     color: white;
     display: flex;
@@ -101,11 +104,9 @@
 }
 .progress-slider{
     display: flex;
+    justify-content: center;
+    width: 100%;
     flex-direction: row;
-    width:80vw;
-    align-items: center;
-    padding: 5px;
-    margin-left: 2vw;
     align-items: center;
 }
 .join-button{
@@ -118,3 +119,91 @@
     font-weight: bold;
 }
 
+p.song, p.artist{
+    color: white;
+    font-size: 0.8;
+    margin: 1vw;
+    font-family: 'Roboto', sans-serif;
+}
+p.song{
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+    margin: 1vw;
+    font-family: 'Roboto', sans-serif;
+}
+
+@media screen and (max-width: 600px) {
+    .friend{
+        display: flex;
+        flex-direction: column;
+        margin: 1vh;
+        color: black;
+        background: rgba(255, 255, 255, 0.171);
+        box-shadow: 5px 5px 20px  rgba(0, 0, 0, 0.39);
+        border-radius: 10px;
+        width: 85%;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px;
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    .friend-content{
+        display: flex;
+        flex-direction: column;
+        color: black;
+        align-items: center;
+        width: 20vw;
+        justify-content: center;
+    }
+    .friend-playing{
+        display: flex;
+        flex-direction: column;
+        margin: 1vh;
+        color: black;
+        border-radius: 10px;
+        width: 100%;
+        align-items: right;
+        justify-content: space-between;
+        padding: 10px;
+    }
+    .song-friend{
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 15px;
+        margin:5px;
+        
+    }
+    .artist{
+        font-size: 10px;
+    
+    }
+    
+    .slider-friend{
+        -webkit-appearance: none;  /* Override default CSS styles */
+        border-radius:15px;
+        width: 100%; /* Full-width */
+        height: 5px; /* Specified height */
+        background: rgb(255, 255, 255) ;
+        outline: none; /* Remove outline */
+        opacity: 0.9; /* Set transparency (for mouse-over effects on hover) */    
+    }
+    .slider-friend::-webkit-slider-thumb {
+        opacity: 0;
+    }
+    .slider-friend::-webkit-slider-thumb:hover {
+        opacity: 1;
+        transform: translateX(-0.25px);
+        -webkit-appearance: none;
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%; 
+        background: #04AA6D;
+        cursor: pointer;
+        border: 1px
+    }
+}

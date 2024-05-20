@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Room from './pages/Room';
+import Chat from './pages/Chat';
 
 
 /* Core CSS required for Ionic components to work properly */

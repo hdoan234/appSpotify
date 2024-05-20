@@ -52,23 +52,17 @@ const Home: React.FC = () => {
                 <div className="room">
                         <div className='room-name'>
                         <IonIcon icon={radioOutline} className="room-icon"/>
-                        <p style={{padding:"3px"}}>Friend's Room</p>
+                        <p style={{padding:"3px"}}>Room Name</p>
                         </div>
                 </div>
                 <div className='cover-artist'>
-                    {currentPlaying.item && (
-                        <>
-                            <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src="{currentPlaying.item.album.images[0].url}" alt="" />
-                            <p className="title">{currentPlaying.item.name}</p>
-                            <p style={{fontSize: "0.7rem"}}>
-                                {currentPlaying.item.artists.map((artist: any, index: number) => (
-                                    `${artist.name}${index === currentPlaying.item.artists.length - 1 ? "" : ", "}`
-                                ))}
-                            </p>
-                        </>
-                    )}
+                    <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src="https://i.scdn.co/image/ab67616d0000b273dc1081776f364f65b7d1b845" alt="" />
+                        <p className="title">Song</p>
+                            <p> Artist </p>
+                        
                 </div>
 
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
 
                 <div className="playing-icons">
                     <IonIcon icon={shuffleOutline} className="shuffle-icon"/>
@@ -79,6 +73,7 @@ const Home: React.FC = () => {
                 <button onClick={sendMessage}>Send</button>
                 <div className="queue-album">
 
+                </div>
                 </div>
             </IonContent>
         </IonPage>

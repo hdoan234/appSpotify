@@ -1,0 +1,21 @@
+.background{
+    --background: linear-gradient(180deg, rgba(0,0,0,1) 30%,rgba(109,251,165,1) 100%);
+}
+.room-name{
+    align-items: center;
+    font-size: 15px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    margin-top: 2vh;
+    padding-bottom: 1vh;
+
+}
+.line{
+    height:1px;
+    background-color: rgba(255, 255, 255, 0.747);
+    width: 60vw;
+    border-radius: 1px;
+    margin: auto;
+}

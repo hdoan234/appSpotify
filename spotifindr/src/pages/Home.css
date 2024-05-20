@@ -32,10 +32,12 @@
     border-radius: 10px;
     margin: 5% 5% 5% 5%;
     padding: 2vh;
-    
+    align-items: center;
     overflow-x: hidden;
     overflow-y: auto;
     text-align: justify;
+    max-width: 90vw;
+    max-height: 85vh;
 }
 
 .search-bar-component {
