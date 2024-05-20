@@ -11,8 +11,10 @@ const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
     const [progress, setProgress] = useState(currentPlaying?.progress_ms)
 
     useEffect(() => {
+        setProgress(currentPlaying?.progress_ms)
         const interval = setInterval(() => {
             setProgress(progress + 1000)
+            console.log(progress)
         }, 1000)
         return () => clearInterval(interval)
     }, [progress])
@@ -36,14 +38,14 @@ const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
                         <p className="time-friend">
                             {timeFormatter(progress + "") }
                         </p>
-                        <input className='slider-friend' style={{width: "40%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
+                        <input className='slider-friend' style={{ width: "100%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
                         <p className="time-friend">
                             { timeFormatter(currentPlaying?.item?.duration_ms) }
                         </p>
                     </div>
                     <p className="song-friend"> 
-                        <p> {currentPlaying.item.name} </p>
-                        <p className="artist"> {currentPlaying?.item?.album.artists.map((artist : any, index: number) => index != currentPlaying.item.album.artists.length - 1 ? artist.name + " ," : artist.name)} </p>
+                        <p className="song"> {currentPlaying.item.name} </p>
+                        <p className="artist"> {currentPlaying?.item?.album.artists.map((artist : any, index: number) => index != currentPlaying.item.album.artists.length - 1 ? artist.name + ", " : artist.name)} </p>
                     </p>
 
                         <button type="button" className="join-button">Join</button>

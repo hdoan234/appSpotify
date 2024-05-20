@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Room from './pages/Room';
+import Chat from './pages/Chat';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -70,6 +71,8 @@ const App: React.FC = () => {
             <PrivateRoute path="/home" exact authenticated={authenticated} component={Home} />
             <PrivateRoute path="/profile" exact authenticated={authenticated} component={Profile} />
             <PrivateRoute path="/room/:roomId" exact authenticated={authenticated} component={Room} />
+            <PrivateRoute path="/chat" exact authenticated={authenticated} component={Chat} />
+
 
           </IonRouterOutlet>
         </IonSplitPane>

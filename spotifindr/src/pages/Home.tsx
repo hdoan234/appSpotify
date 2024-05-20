@@ -88,7 +88,12 @@ const Home: React.FC = () => {
           // TODO: Add more styling to no following
           following.length == 0 ? <h1 style={{textAlign: "center"}}>Oof... You're not following anyone</h1> :
           <div className="friend-container">
-          { following?.map((follow) => <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> )}
+          { following?.map((follow) => <>
+            <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> 
+            <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> 
+            <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> 
+          </>)
+}
           </div>
         }
         </>

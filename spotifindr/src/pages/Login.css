@@ -184,3 +184,17 @@ ion-icon {
     }
 
 }
+.container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--background);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: 'Lato', sans-serif;
+    color: var(--color);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}

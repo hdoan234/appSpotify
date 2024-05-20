@@ -2,7 +2,7 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import { useState, useEffect, useRef } from "react"
 import { useInterval } from 'usehooks-ts';
 import { peopleOutline } from 'ionicons/icons';
-import { useSpring, animated } from '@react-spring/web';
+// import { useSpring, animated } from '@react-spring/web';
 import './Profile.css';
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import * as userUtil from '../utils/userUtil'; 
@@ -160,6 +160,7 @@ const Home: React.FC = () => {
                     { deviceList.map((device: any) => {
                         return <option key={device.id} value={device.id}>{ device.name } - { device.type }</option>
                     })}
+                    
                 </select>
             </IonContent>
         </IonPage>
