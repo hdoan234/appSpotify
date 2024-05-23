@@ -10,7 +10,7 @@
     justify-content: center;
     margin-top: 2vh;
     padding-bottom: 1vh;
-
+    font-size: large;
 }
 .line{
     height:1px;
@@ -18,4 +18,31 @@
     width: 60vw;
     border-radius: 1px;
     margin: auto;
+}
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 0;
+    width: 90%;  
+    max-width: 90%;
+    height: 30vh; 
+    max-height: 8vh;
+    margin: 1vh auto;
+    padding: 2vh;
+    background-color: rgba(255, 255, 255, 0.404);
+    border-radius: 10px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    resize:none;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: black;
+    left:5%;
+}
+
+/* Optional: To hide the scrollbar */
+.chat-box::-webkit-scrollbar {
+    display: none;
 }

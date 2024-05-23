@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import Room from './pages/Room';
 import Chat from './pages/Chat';
-
+import Matching from './pages/Matching';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -72,6 +72,8 @@ const App: React.FC = () => {
             <PrivateRoute path="/profile" exact authenticated={authenticated} component={Profile} />
             {/* <PrivateRoute path="/room/:roomId" exact authenticated={authenticated} component={Room} /> */}
             <Route path="/room/:roomId" exact component={Room} />
+            <PrivateRoute path="/chat" exact authenticated={authenticated} component={Chat} />
+            <PrivateRoute path="/matching" exact authenticated={authenticated} component={Matching} />
 
           </IonRouterOutlet>
         </IonSplitPane>

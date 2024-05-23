@@ -14,6 +14,7 @@ const Chat = () => {
                 <div className='line'>
                     
                 </div>
+                <textarea className='chat-box' placeholder='Type a message...'></textarea>
             </IonContent>
 
     )
