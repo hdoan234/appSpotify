@@ -165,8 +165,8 @@ p.song{
         border-radius: 10px;
         width: 100%;
         align-items: right;
-        justify-content: space-between;
-        padding: 10px;
+        justify-content: center;
+        text-align: center;
     }
     .song-friend{
         color: white;

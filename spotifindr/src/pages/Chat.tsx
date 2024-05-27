@@ -2,7 +2,7 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 
 import { useState } from "react"
 
-import { lockClosedOutline, personOutline } from 'ionicons/icons';
+import { sendOutline } from 'ionicons/icons';
 import * as auth from '../utils/auth';
 
 import './Chat.css';
@@ -15,6 +15,7 @@ const Chat = () => {
                     
                 </div>
                 <textarea className='chat-box' placeholder='Type a message...'></textarea>
+                <button className='send-button'> <IonIcon icon={sendOutline} className="send-outline"> </IonIcon></button>
             </IonContent>
 
     )

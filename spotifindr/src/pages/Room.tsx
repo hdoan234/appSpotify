@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react";
 import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline, radioOutline } from 'ionicons/icons';
 import axios from 'axios';
@@ -41,6 +41,7 @@ const Home: React.FC = () => {
         }
     }, [])
 
+
     return(
         <IonPage>
             <IonContent fullscreen className='background'>
@@ -52,7 +53,7 @@ const Home: React.FC = () => {
                 <div className="room">
                         <div className='room-name'>
                         <IonIcon icon={radioOutline} className="room-icon"/>
-                        <p style={{padding:"3px"}}>Room Name</p>
+                        <p>Room Name</p>
                         </div>
                 </div>
                 <div className='cover-artist'>
@@ -64,13 +65,12 @@ const Home: React.FC = () => {
 
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
 
-                <div className="playing-icons">
+                <button className="playing-icons">
                     <IonIcon icon={shuffleOutline} className="shuffle-icon"/>
                     <IonIcon icon={heartOutline} className="heart-icon"/>
                     <IonIcon icon={addCircleOutline} className="add-icon"/> 
-                </div>
-                <input type="text" onChange={(e) => setMsg(e.target.value)} />
-                <button onClick={sendMessage}>Send</button>
+                </button>
+                
                 <div className="queue-album">
 
                 </div>

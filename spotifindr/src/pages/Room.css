@@ -16,27 +16,27 @@
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: auto;
     display: flex;
-    margin:0;
-    
-}
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    height: 3vh;
+} 
 .room-icon{
     color: white;
-    font-size: 3vh;
-    margin-right:5px;
-    
+    margin-right:8px;
 }
 .search-icon{
     color: white;
-    height: 5vh;
-    width:5vw;
+    height: 3vh;
+    width:3vw;
     right: 0px;
     margin-right: 4%;
     
 }
 .list-icon{
     color:white;
-    height: 5vh;
-    width:5vw;
+    height: 3vh;
+    width:3vw;
 }
 
 .background{
@@ -65,7 +65,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.481);
+    background-color: rgba(255, 255, 255, 0.384);
     color: white;
     margin-top: 2vh;
     border-radius: 10px;
@@ -96,6 +96,34 @@
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-
+    background-color: rgba(255, 255, 255, 0);
 }
 
+.send-button{
+    background-color: rgba(56, 99, 63, 0.11);
+    height: 3vh;
+    width: 15vw;
+    border-radius: 10px;
+}
+.text-box{
+    background-color: rgba(70, 70, 70, 0.384);
+    height: 3vh;
+    width: 60vw;
+    border-radius: 5px;
+    margin-left: 2vw;
+    color: white;
+    margin-top: 2vh;
+    margin-bottom: 1vh;
+}
+.send-button:hover{
+    background-color: rgba(11, 92, 25, 0.568);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.button{
+    background-color: rgba(56, 99, 63, 0);
+    height: 3vh;
+    width: 15vw;
+    border-radius: 10px;
+    margin-left: 2vw;
+    margin-top: 2vh;
+}

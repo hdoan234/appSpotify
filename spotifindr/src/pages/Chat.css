@@ -26,10 +26,10 @@
     justify-content: center;
     position: fixed;
     bottom: 0;
-    width: 90%;  
-    max-width: 90%;
-    height: 30vh; 
-    max-height: 8vh;
+    width: 82%;  
+    max-width: 82%;
+    height: 6vh; 
+    max-height: 6vh;
     margin: 1vh auto;
     padding: 2vh;
     background-color: rgba(255, 255, 255, 0.404);
@@ -45,4 +45,24 @@
 /* Optional: To hide the scrollbar */
 .chat-box::-webkit-scrollbar {
     display: none;
+}
+
+.chat-box:focus {
+    outline: none;
+}
+
+.send-button{
+    position: fixed;
+    bottom: 1vh;
+    right: 0;
+    margin: 1vh;
+    padding: 1vh;
+    background-color: rgba(255, 255, 255, 0.404);
+    border-radius: 10px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: black;
+    cursor: pointer;
+    width: 6vw;
+    height: 4vh;
+    right: 3%;
 }

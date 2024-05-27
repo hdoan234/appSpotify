@@ -61,8 +61,8 @@
     position: absolute;
     margin: auto;
     background-color: #DAF1DE;
-    height: 4vw; /* Adjust size with viewport width */
-    width: 4vw; /* Adjust size with viewport width */
+    height: 4vw; 
+    width: 4vw; 
     transform: rotate(-45deg);
     animation-name: beat;
     animation-duration: 1s;
@@ -74,10 +74,10 @@
     content: "";
     border-radius: 50%;
     position: absolute;
-    width: 4vw; /* Adjust size with viewport width */
-    height: 4vw; /* Adjust size with viewport width */
+    width: 4vw; 
+    height: 4vw; 
     top: 0px;
-    left: 2vw; /* Adjust position with viewport width */
+    left: 2vw; 
   }
   
   .heart:before {
@@ -85,9 +85,9 @@
     content: "";
     border-radius: 50%;
     position: absolute;
-    width: 4vw; /* Adjust size with viewport width */
-    height: 4vw; /* Adjust size with viewport width */
-    top: -2vw; /* Adjust position with viewport width */
+    width: 4vw; 
+    height: 4vw; 
+    top: -2vw; 
     left: 0px;
   }
   
