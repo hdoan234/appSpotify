@@ -1,8 +1,9 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import './Home.css';
 import React, { useEffect, useState } from 'react';
 import { useInterval } from 'usehooks-ts';
 import { IonSearchbar } from '@ionic/react';
+import { useSpring, animated } from '@react-spring/web';
 
 import FriendBlock from '../components/FriendBlock';
 
@@ -17,7 +18,10 @@ const Home: React.FC = () => {
   const [profile, setProfile] = useState<UserDataProps>();
   const [isLoading, setIsLoading] = useState(false);
   const [searchFocus, setSearchFocus] = useState(false);
-
+  const [props, api] = useSpring(() => ({ 
+    from: {opacity: isLoading ? 1 : 0},
+    to: {opacity: 0},}))
+    
   const fetchData = async() => {
       const follow = userUtil.getCurrentFollow();
       const profile = userUtil.getUser();
@@ -53,13 +57,17 @@ const Home: React.FC = () => {
       setFollowing(data.following)
     })
   }, 5000)
+  
+
 
   return (
     <IonPage>
       <IonContent fullscreen className="container" >
       {
         // TODO: Add design to the loading screen, maybe a spinner component since we are going to reuse it
-        !isLoading ? <h1>Loading...</h1> :
+        !isLoading ? <animated.div className='loading-background' style={props}> 
+        <IonSpinner name="crescent" style={{ color: "white" }} />
+        </animated.div> :
         <>
         <div className="search-container" >
           <div className="search-bar-component">

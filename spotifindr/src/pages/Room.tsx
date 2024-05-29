@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react";
 import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline, radioOutline } from 'ionicons/icons';
 import axios from 'axios';
@@ -64,6 +64,7 @@ const Home: React.FC = () => {
         }
     }, [])
 
+
     return(
         <IonPage>
             <IonContent fullscreen className='background'>
@@ -75,7 +76,7 @@ const Home: React.FC = () => {
                 <div className="room">
                         <div className='room-name'>
                         <IonIcon icon={radioOutline} className="room-icon"/>
-                        <p style={{padding:"3px"}}>Room Name</p>
+                        <p>Room Name</p>
                         </div>
                 </div>
                 {
