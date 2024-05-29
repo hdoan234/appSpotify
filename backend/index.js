@@ -30,7 +30,7 @@ const sessionMiddleware = session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    secure: true,
+    secure: process.env.REACT_APP_API_URL ? true : false,
     sameSite: 'none',
     // domain: "https://guyana-ba-nut-epic.trycloudflare.com"
   }
