@@ -1,6 +1,6 @@
 import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react";
-import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline, radioOutline } from 'ionicons/icons';
+import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline } from 'ionicons/icons';
 import axios from 'axios';
 
 import socket from '../websocket';
@@ -19,6 +19,8 @@ const Home: React.FC = () => {
     const [profile, setProfile] = useState<UserDataProps>();
     const [isLoading, setIsLoading] = useState(false);
     const [player, setPlayer] = useState<any | null>(null);
+    const [sliderProgress, setSliderProgress] = useState<string>("0");
+
 
     const [msg, setMsg] = useState('');
 
@@ -58,18 +60,19 @@ const Home: React.FC = () => {
                 </div>
                 <div className='cover-artist'>
                     <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src="https://i.scdn.co/image/ab67616d0000b273dc1081776f364f65b7d1b845" alt="" />
-                        <p className="title">Song</p>
-                            <p> Artist </p>
-                        
+                        <p style={{fontSize:"1.2rem"}}>Song</p>
+                            <p style={{fontSize:"0.8rem",  padding:"5px"}}> Artist </p>
+                            <input className='slider' style={{width: "60%", height:"0.7vh", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" step="0.1" min="1" max="100" value={ sliderProgress} />
+                            <p style={{margin:"5px"}}></p>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
 
-                <button className="playing-icons">
-                    <IonIcon icon={shuffleOutline} className="shuffle-icon"/>
-                    <IonIcon icon={heartOutline} className="heart-icon"/>
-                    <IonIcon icon={addCircleOutline} className="add-icon"/> 
-                </button>
+                <div className="playing-icons">
+                    <IonIcon icon={playSkipBackOutline} className="back-icon room-button"/> 
+                    <IonIcon icon={playOutline} className="play-icon room-button"/> 
+                    <IonIcon icon={playSkipForwardOutline} className="skip-icon room-button"/>
+                </div>
                 
                 <div className="queue-album">
 
