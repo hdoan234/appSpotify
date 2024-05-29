@@ -27,6 +27,8 @@
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.6.8",
     "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
+    "http-proxy-middleware": "^3.0.0",
     "ionic-cli": "^0.0.0",
     "ionicons": "^7.0.0",
     "react": "^18.2.0",
@@ -59,5 +61,6 @@
     "vite": "^5.0.0",
     "vitest": "^0.34.6"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "proxy": "http://localhost:3000"
 }

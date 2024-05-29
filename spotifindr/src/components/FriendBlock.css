@@ -167,6 +167,7 @@ p.song{
         align-items: right;
         justify-content: space-between;
         padding: 10px;
+        text-align: center;
     }
     .song-friend{
         color: white;
