@@ -25,20 +25,6 @@
 
 }
 
-/* .loader {
-    width: 15px;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    animation: l5 1s infinite linear alternate;
-  }
-  @keyframes l5 {
-      0%  {box-shadow: 20px 0 #ffffff, -20px 0 rgba(255, 255, 255, 0.133);background: #ffffff }
-      33% {box-shadow: 20px 0 #ffffff, -20px 0 rgba(255, 255, 255, 0.133);background: rgba(253, 253, 253, 0.133)}
-      66% {box-shadow: 20px 0 rgba(255, 255, 255, 0.133),-20px 0 #ffffff; background: rgba(255, 255, 255, 0.133)}
-      100%{box-shadow: 20px 0 rgba(255, 255, 255, 0.133),-20px 0 #ffffff; background: #ffffff }
-  } */
-
-
   .center {
     display: flex;
   }

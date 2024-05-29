@@ -82,30 +82,32 @@ const Home: React.FC = () => {
                         </div>
                 </div>
                 {
-                    !currentPlaying || !currentPlaying.is_playing ? <h1>Owner is not playing anything</h1> :
+                    !currentPlaying || !currentPlaying.is_playing ? <h1 style={{textAlign:"center"}}>Owner is not playing anything</h1> :
                     <div>
                     <div className='cover-artist'>
                         <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src={currentPlaying?.item?.album?.images[0]?.url} alt="" />
-                            <p className="title">Song</p>
-                                <p> Artist </p>
+                            <p style={{fontSize:"1.2rem"}}>Song</p>
+                                <p style={{fontSize:"0.8rem"}}> Artist </p>
+                                <input className='slider' style={{width: "60%", height:"0.5vh", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" step="0.1" min="1" max="100" value={ sliderProgress} /> 
                             
                     </div>
 
 
                     <div className="playing-icons">
-                        <IonIcon icon={shuffleOutline} onClick={() => play()} className="shuffle-icon"/>
-                        <IonIcon icon={heartOutline} onClick={() => pause()} className="heart-icon"/>
-                        <IonIcon icon={addCircleOutline} className="add-icon"/> 
+                        <IonIcon icon={playSkipBackOutline} onClick={() => play()} className="back-icon room-button"/>
+                        <IonIcon icon={playOutline} onClick={() => pause()} className="play-icon room-button"/>
+                        <IonIcon icon={playSkipForwardOutline} className="skip-icon room-button"/> 
                     </div>
-                    <input type="text" onChange={(e) => setMsg(e.target.value)} />
-                    <button onClick={sendMessage}>Send</button>
-                    <div className="queue-album">
-
-                    </div>
+                    
+                    
                 </div>
                 }
+                <div className='chatbox-container'>
+                    <div className="chatbox"></div>
+                </div>
+                
             </IonContent>
         </IonPage>
     );
 };
-export default Home;
+export default Home; 
