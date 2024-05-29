@@ -1,6 +1,7 @@
 import crypto from "crypto"
 const clientId = "bc9f189f3fcc42e1934d09886c74aa1e"
 const clientSecret = "ef343bf5d97245e581abbfbabae45c68"
+const callbackURL = (process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL : "http://locahost:8100/") + "callback"
 
 import axios from "axios"
 
@@ -16,7 +17,7 @@ export const redirectToAuth = async () => {
     const params = new URLSearchParams();
     params.append("client_id", clientId);
     params.append("response_type", "code");
-    params.append("redirect_uri", "https://scale-emily-und-spending.trycloudflare.com/callback");
+    params.append("redirect_uri", callbackURL);
     params.append("scope", "streaming app-remote-control user-read-private user-read-email user-read-playback-state user-read-currently-playing user-modify-playback-state");
     params.append("state", state);
 
@@ -49,7 +50,7 @@ export async function generateCodeChallenge(codeVerifier) {
 export const getAccessToken = async (state, code) => {
     const form = {
         code: code,
-        redirect_uri: "https://scale-emily-und-spending.trycloudflare.com/callback",
+        redirect_uri: callbackURL,
         grant_type: "authorization_code",
     }
     const headers = {
