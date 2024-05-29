@@ -1,6 +1,6 @@
 import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react";
-import { listOutline, shuffleOutline, heartOutline, addCircleOutline, searchOutline, radioOutline } from 'ionicons/icons';
+import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline } from 'ionicons/icons';
 import axios from 'axios';
 
 import socket from '../websocket';
@@ -18,6 +18,8 @@ const Home: React.FC = () => {
     const [profile, setProfile] = useState<UserDataProps>();
     const [isLoading, setIsLoading] = useState(false);
     const [player, setPlayer] = useState<any | null>(null);
+    const [sliderProgress, setSliderProgress] = useState<string>("0");
+
 
     const [msg, setMsg] = useState('');
 

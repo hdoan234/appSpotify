@@ -72,7 +72,7 @@
     width: 90vw;
     height: 20vh;
 }
-.shuffle-icon, .heart-icon, .add-icon{
+.back-icon, .play-icon, .skip-icon{
     color: white;
     padding: 5px;
     font-size: 25px;
@@ -93,10 +93,8 @@
 }
 
 .playing-icons {
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0);
+    all: unset;
+    
 }
 
 .send-button{
@@ -119,11 +117,13 @@
     background-color: rgba(11, 92, 25, 0.568);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
-.button{
-    background-color: rgba(56, 99, 63, 0);
-    height: 3vh;
-    width: 15vw;
+.room-button{
     border-radius: 10px;
-    margin-left: 2vw;
-    margin-top: 2vh;
+    padding: 0 2vw;
+    margin: 0 8vw;
+    transition: ease-in-out 0.5s;
+}
+.room-button:hover{
+    background-color: rgba(255, 255, 255, 0.151);
+    color: white;
 }
