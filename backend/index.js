@@ -14,42 +14,196 @@ import { createServer, get } from 'http';
 import session from 'express-session';
 import { PrismaClient } from '@prisma/client';
 
+import spotifyUtils from './utils/spotifyUtils.js';
+
+import dotenv from "dotenv"
+import e from 'express';
+
+
+dotenv.config({ path: ['./.env'] })
+
 const app = express();
 
-app.use(cors({
-  origin: 'http://localhost:8100',
-  credentials: true,
-}));
+const sessionMiddleware = session({
+  proxy: true,
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true,
+  cookie: {
+    secure: true,
+    sameSite: 'none',
+    // domain: "https://guyana-ba-nut-epic.trycloudflare.com"
+  }
+})
 
-app.use(cookieParser());
-app.use(bodyParser.json())
 
-app.use(
-  session({
-    secret: 'keyboard cat',
-    resave: true,
-    saveUninitialized: false,
-  })
-)
+app
+  .set('trust proxy', 1)
+  .use(cors({
+    origin: ['http://localhost:8100', 'https://mullet-pleased-centrally.ngrok-free.app', process.env.REACT_APP_API_URL],
+    credentials: true,
+  }))
+  .use(cookieParser())
+  .use(bodyParser.json())
+  .use(sessionMiddleware)
+
 
 const httpServer = createServer(app)
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:8100",
-    methods: ["GET", "POST"],
+    origin: ['http://localhost:8100', 'https://mullet-pleased-centrally.ngrok-free.app'],
     credentials: true
   }
 })
 
-io.on('connection', (socket) => {
-  socket.emit("greet", "Hello from server")
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, {}, next)
+})
+
+const authMiddleware = (req, res, next) => {
+  if (isAuthenticated(req)) {
+    next()
+  } else {
+    res.status(401).json({ error: 'Unauthorized' })
+  }
+}
+
+const roomMap = new Map()
+const socketIdToRoom = new Map()
+
+io.on('connection', async (socket) => {
   
-  socket.on('join', (data) => {
-    console.log(data.room)
+
+  if (!socket.request.session.user) {
+    socket.emit('unauthorized', 'Unauthorized')
+    socket.disconnect()
+  }
+
+
+  socket.on('join', async (data) => {
     socket.join(data.room)
-    io.to(data.room).emit('joined', data.room)
-    console.log(io.sockets.adapter.rooms.get(data.room))
+    if (socketIdToRoom.has(socket.id)) {
+      socketIdToRoom.get(socketId).add(data.room)
+    } else {
+      socketIdToRoom.set(socket.id, new Set([data.room]))
+    }
+
+    const socketId = socket.id;
+    const spotifyId = socket.request.session.user.spotifyId
+
+    console.log(roomMap.get(data.room))
+
+    if (!roomMap.has(data.room)) {
+
+      const IdToUsersMapping = new Map()
+      const UsersToIdMapping = new Map()
+
+      IdToUsersMapping.set(socketId, spotifyId)
+      UsersToIdMapping.set(spotifyId, socketId)
+
+      roomMap.set(data.room, {
+        "owner": spotifyId,
+        "IdToUsersMapping": IdToUsersMapping,
+        "UsersToIdMapping": UsersToIdMapping
+      })
+
+    } else if (roomMap.get(data.room)["UsersToIdMapping"].has(spotifyId)) {
+
+      const oldSocketId = roomMap.get(data.room)["UsersToIdMapping"].get(spotifyId)
+
+      roomMap.get(data.room)["IdToUsersMapping"].delete(oldSocketId)
+
+      roomMap.get(data.room)["IdToUsersMapping"].set(socketId,spotifyId);
+      roomMap.get(data.room)["UsersToIdMapping"].set(spotifyId, socketId);
+
+    } else {
+      roomMap.get(data.room)["IdToUsersMapping"].set(socketId, spotifyId);
+      roomMap.get(data.room)["UsersToIdMapping"].set(spotifyId, socketId);
+    }
+
+    const ownerId = roomMap.get(data.room)["owner"]
+    
+    const ownerUser = await getAccount(ownerId)
+    const access_token = ownerUser.access_token
+    try {
+
+      const roomState = await spotifyUtils.getListeningState(access_token)
+
+      io.to(data.room).emit('update', roomState)
+
+
+    } catch (e) {
+
+      access_token = await refreshLogin(ownerUser.refresh_token, ownerUser.spotifyId)
+      const roomState = await spotifyUtils.getListeningState(access_token)
+      io.to(data.room).emit('update', roomState)
+
+    }
+
+
+    console.log(spotifyId + " joined " + data.room)
+
+  })
+
+  socket.on('ownerPlay', async (data) => {
+    console.log("Owner Play Requested " + data.room)
+
+    if (roomMap.get(data.room)["IdToUsersMapping"].get(socket.id) != roomMap.get(data.room)["owner"]) {
+      socket.emit('unauthorized', 'Unauthorized')
+      return
+    }
+    
+    const ownerUser = await getAccount(roomMap.get(data.room)["owner"])
+
+    let ownerCurrentState;
+
+    try {
+      ownerCurrentState = await spotifyUtils.getListeningState(ownerUser.access_token)
+    } catch (e) {
+      const newToken = refreshLogin(ownerUser.refresh_token, ownerUser.spotifyId)
+      ownerCurrentState = await spotifyUtils.getListeningState(newToken.access_token)
+    }
+    const uri = ownerCurrentState.item.album.uri;
+    const timeFrame = ownerCurrentState.progress_ms;
+    const albumPosition = ownerCurrentState.item.track_number - 1;
+
+    for (let [socketId, spotifyId] of roomMap.get(data.room)["IdToUsersMapping"]) {
+      getAccount(spotifyId).then((user) => {
+        const access_token = user.access_token
+        try {
+          spotifyUtils.playAlbumByURI(uri, access_token, albumPosition, timeFrame)
+        } catch (e) {
+          const newToken = refreshLogin(user.refresh_token, user.spotifyId)
+          spotifyUtils.playAlbumByURI(uri, newToken.access_token, albumPosition, timeFrame)
+        }
+      })
+    }
+
+    socket.to(data.room).emit('update', ownerCurrentState)
+  })
+
+  socket.on('ownerPause', (data) => {
+    console.log("Owner Pause Requested " + data.room)
+
+    if (roomMap.get(data.room)["IdToUsersMapping"].get(socket.id) != roomMap.get(data.room)["owner"]) {
+      socket.emit('unauthorized', 'Unauthorized')
+      return
+    }
+
+    for (let [socketId, spotifyId] of roomMap.get(data.room)["IdToUsersMapping"]) {
+      getAccount(spotifyId).then(async (user) => {
+        const access_token = user.access_token
+        try {
+          spotifyUtils.pause(access_token)
+        } catch (e) {
+          const newToken = await refreshLogin(user.refresh_token, user.spotifyId)
+          spotifyUtils.pause(newToken.access_token)
+        }
+      })
+    }
+
+    socket.to(data.room).emit('update', { "is_playing": false })
   })
 
   socket.on('sendMessage', (data) => {
@@ -57,36 +211,33 @@ io.on('connection', (socket) => {
     socket.to(data.room).emit('newMessage', data.message)
   })
 
-  socket.on('createRoom', (data) => {
-    //  generate a random room id
-    const roomId = Math.random().toString(36).substring(7)
-    rooms[roomId] = {
-      users: []
-    }
-    socket.join(roomId)
-    console.log(io.sockets.adapter.rooms)
+  socket.on('disconnect', () => {
+    const id = socket.id
+
+    const userRooms = socketIdToRoom.get(id)
+
+    if (userRooms) userRooms.forEach((room) => {
+      if (!roomMap.get(room)) return
+
+      if (roomMap.get(room)["owner"] == roomMap.get(room)["IdToUsersMapping"].get(id)){
+        roomMap.delete(room)
+        io.to(room).emit('roomDeleted', 'Room Deleted')
+      } else {
+        io.to(room).emit('userLeft', { userID: roomMap.get(room)["IdToUsersMapping"].get(id) })
+  
+        roomMap.get(room)["UsersToIdMapping"].delete(roomMap.get(room)["IdToUsersMapping"].get(id))
+        roomMap.get(room)["IdToUsersMapping"].delete(id)
+        
+      }
+      console.log(socket.request.session.user.spotifyId + " left " + room)
+    })
   })
-
-})
-
-httpServer.listen(3001, () => {
-  console.log('Websocket is running on port 3001');
 })
 
 const prisma = new PrismaClient()
 
 const isAuthenticated = (req) => {
   return Boolean(req.session.user)
-}
-
-const authMiddleware = (req, res, next) => {
-  if (isAuthenticated(req)) {
-    // User is authenticated, proceed to the next middleware or route handler
-    next()
-  } else {
-    // User is not authenticated, respond with an error
-    res.status(401).json({ error: 'Unauthorized' })
-  }
 }
 
 const refreshLogin = async (refresh_token, id) => {
@@ -111,8 +262,8 @@ const refreshLogin = async (refresh_token, id) => {
 }
 
 app.get('/api/getAuth', async (req, res) => {
-  if (isAuthenticated(req)) {
 
+  if (isAuthenticated(req)) {
     res.send({
       "ok": false,
       "message": "Already authenticated"
@@ -120,9 +271,8 @@ app.get('/api/getAuth', async (req, res) => {
     return
   }
 
-  const { verifier, spotURL } = await redirectToAuth()
+  const { spotURL } = await redirectToAuth()
 
-  res.cookie('verifier', verifier, { httpOnly: true })
 
   res.send({
     ok: true,
@@ -182,10 +332,10 @@ app.post('/api/credAuth', async (req, res) => {
 
 app.get("/callback", async (req, res) => {
   
-  const verifier = req.cookies.verifier
+  const state = req.query.state
   const code = req.query.code
 
-  const tokenObj = await getAccessToken(verifier, code)
+  const tokenObj = await getAccessToken(state, code)
 
 
   const access_token = tokenObj.access_token
@@ -202,7 +352,9 @@ app.get("/callback", async (req, res) => {
   req.session.user = {
     "spotifyId": result.data.id,
   }
-  
+
+  console.log(result.data.id)
+
   if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token, access_token, result.data.images[1].url)
   else {
     await prisma.user.update({
@@ -216,8 +368,14 @@ app.get("/callback", async (req, res) => {
     })
   }
 
-
-  res.redirect("http://localhost:8100/")
+  req.session.save(err => {
+    if (err) {
+      console.log(err)
+    }
+    else {
+      res.redirect(process.env.REACT_APP_API_URL || 'http://localhost:8100')
+    }
+  })
 
 })
 
@@ -451,6 +609,7 @@ app.get("/api/sendFollow", authMiddleware, async (req, res) => {
 
 })
 
-app.listen(3000, () => {
+
+httpServer.listen(3000, () => {
     console.log('Server is running on port 3000');
 });

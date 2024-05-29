@@ -1,16 +1,16 @@
-import axios from 'axios';
-import { UserDataProps } from '../type';
 
-axios.defaults.withCredentials = true;
+import { UserDataProps } from '../type';
+import axios from './setupAxios'
 
 export const getUser = async () : Promise<UserDataProps> => {
-    const res = await axios.get('http://localhost:3000/api/profile');
+    const res = await axios.get('/api/profile');
     return res.data.user;
 };
 
 export const userPlayingState = async () : Promise<any> => {
+    console.log(import.meta.env)
     try {
-        const res = await axios.get('http://localhost:3000/api/playing');
+        const res = await axios.get('/api/playing');
         return res.data;
     } catch (e : any) {
         throw new Error('Error getting user playing state');
@@ -19,7 +19,7 @@ export const userPlayingState = async () : Promise<any> => {
 
 export const getPlayingStateById = async (id : string) : Promise<any> => {
     try {
-        const res = await axios.get(`http://localhost:3000/api/playing/${id}`);
+        const res = await axios.get(`/api/playing/${id}`);
         return res.data;
     } catch (e : any) {
         throw new Error('Error getting user playing state');
@@ -28,7 +28,7 @@ export const getPlayingStateById = async (id : string) : Promise<any> => {
 
 export const getCurrentFollow = async () : Promise<any> => {
     try {
-        const res = await axios.get('http://localhost:3000/api/currentFollow');
+        const res = await axios.get('/api/currentFollow');
         return res.data;
     } catch (e) {
         throw new Error('Error getting current follow');
@@ -37,7 +37,7 @@ export const getCurrentFollow = async () : Promise<any> => {
 
 export const getAllUsers = async () : Promise<any> => {
     try {
-        const res = await axios.get('http://localhost:3000/api/allUsers');
+        const res = await axios.get('/api/allUsers');
         return res.data;
     } catch (e) {
         throw new Error('Error getting all users');
@@ -46,7 +46,7 @@ export const getAllUsers = async () : Promise<any> => {
 
 export const followUser = async (id : string) : Promise<any> => {
     try {
-        const res = await axios.get('http://localhost:3000/api/sendFollow?toId=' + id);
+        const res = await axios.get('/api/sendFollow?toId=' + id);
         return res.data;
     } catch (e) {
         throw new Error('Error following user');

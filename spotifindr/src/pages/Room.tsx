@@ -9,7 +9,6 @@ import './Room.css';
 import { FollowUserProps, UserDataProps } from '../type';
 import * as userUtil from '../utils/userUtil';
 
-
 import { useParams } from 'react-router';
 
 const Home: React.FC = () => {
@@ -31,12 +30,36 @@ const Home: React.FC = () => {
         socket.emit('sendMessage', { room: roomId, message: msg })
     }
 
+    const play = () => {
+        socket.emit('ownerPlay', { room: roomId })
+    }
+
+    const pause = () => {
+        socket.emit('ownerPause', { room: roomId })
+    }
+
     useEffect(() => {
         socket.connect()
 
-        socket.on('greet', (data) => console.log(data))
-        socket.on('newMessage', (data) => console.log(data))
         socket.emit('join', { room: roomId })
+
+        // TODO: Add error handling
+        socket.on('unauthorized', (error) => alert(error))
+
+        socket.on('greet', (data) => console.log(data))
+
+        socket.on('newMessage', (data) => console.log(data))
+        
+        socket.on('update', (data) => {
+            console.log(data)
+            setCurrentPlaying(data)
+        })
+
+        socket.on('roomDeleted', () => {
+            alert('Room has been deleted');
+            window.location.href = '/';
+        })
+
 
         return () => {
             socket.disconnect()
@@ -58,26 +81,29 @@ const Home: React.FC = () => {
                         <p>Room Name</p>
                         </div>
                 </div>
-                <div className='cover-artist'>
-                    <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src="https://i.scdn.co/image/ab67616d0000b273dc1081776f364f65b7d1b845" alt="" />
-                        <p style={{fontSize:"1.2rem"}}>Song</p>
-                            <p style={{fontSize:"0.8rem",  padding:"5px"}}> Artist </p>
-                            <input className='slider' style={{width: "60%", height:"0.7vh", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" step="0.1" min="1" max="100" value={ sliderProgress} />
-                            <p style={{margin:"5px"}}></p>
-                </div>
+                {
+                    !currentPlaying || !currentPlaying.is_playing ? <h1>Owner is not playing anything</h1> :
+                    <div>
+                    <div className='cover-artist'>
+                        <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src={currentPlaying?.item?.album?.images[0]?.url} alt="" />
+                            <p className="title">Song</p>
+                                <p> Artist </p>
+                            
+                    </div>
 
-                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
 
-                <div className="playing-icons">
-                    <IonIcon icon={playSkipBackOutline} className="back-icon room-button"/> 
-                    <IonIcon icon={playOutline} className="play-icon room-button"/> 
-                    <IonIcon icon={playSkipForwardOutline} className="skip-icon room-button"/>
-                </div>
-                
-                <div className="queue-album">
+                    <div className="playing-icons">
+                        <IonIcon icon={shuffleOutline} onClick={() => play()} className="shuffle-icon"/>
+                        <IonIcon icon={heartOutline} onClick={() => pause()} className="heart-icon"/>
+                        <IonIcon icon={addCircleOutline} className="add-icon"/> 
+                    </div>
+                    <input type="text" onChange={(e) => setMsg(e.target.value)} />
+                    <button onClick={sendMessage}>Send</button>
+                    <div className="queue-album">
 
+                    </div>
                 </div>
-                </div>
+                }
             </IonContent>
         </IonPage>
     );

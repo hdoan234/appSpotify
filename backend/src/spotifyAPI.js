@@ -6,24 +6,25 @@ import axios from "axios"
 
 import { PrismaClient } from "@prisma/client"
 
+import dotenv from "dotenv"
+dotenv.config({ path: "../.env" })
+
 export const redirectToAuth = async () => {
-    const verifier = generateCodeVerifier(128);
-    const challenge = await generateCodeChallenge(verifier);
+
+    const state = generateState(16);
 
     const params = new URLSearchParams();
     params.append("client_id", clientId);
     params.append("response_type", "code");
-    params.append("redirect_uri", "http://localhost:3000/callback");
-    params.append("scope", "user-read-private user-read-email user-read-playback-state user-read-currently-playing user-modify-playback-state");
-    params.append("code_challenge_method", "S256");
-    params.append("code_challenge", challenge);
+    params.append("redirect_uri", "https://scale-emily-und-spending.trycloudflare.com/callback");
+    params.append("scope", "streaming app-remote-control user-read-private user-read-email user-read-playback-state user-read-currently-playing user-modify-playback-state");
+    params.append("state", state);
 
     return {
         "spotURL": `https://accounts.spotify.com/authorize?${params.toString()}`,
-        "verifier": verifier,
     };
 }
-export function generateCodeVerifier(length) {
+export function generateState(length) {
     let text = '';
     let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -45,21 +46,20 @@ export async function generateCodeChallenge(codeVerifier) {
         .replace(/=+$/, '');
 }
 
-export const getAccessToken = async (verifier, code) => {
-    const params = new URLSearchParams();
-    params.append("client_id", clientId);
-    params.append("grant_type", "authorization_code");
-    params.append("code", code);
-    params.append("redirect_uri", "http://localhost:3000/callback");
-    params.append("code_verifier", verifier);
+export const getAccessToken = async (state, code) => {
+    const form = {
+        code: code,
+        redirect_uri: "https://scale-emily-und-spending.trycloudflare.com/callback",
+        grant_type: "authorization_code",
+    }
+    const headers = {
+        'Authorization': 'Basic ' + (Buffer.from(clientId + ':' + clientSecret).toString('base64')),
+        'Content-Type': 'application/x-www-form-urlencoded',
+    }
 
-    const result = await fetch("https://accounts.spotify.com/api/token", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: params
-    });
+    const result = await axios.post("https://accounts.spotify.com/api/token", form, { headers: headers }, { json: true });
 
-    return await result.json();
+    return await result.data;
 }
 
 export const getAccessTokenWithRefreshToken = async (refreshToken) => {
@@ -76,8 +76,6 @@ export const getAccessTokenWithRefreshToken = async (refreshToken) => {
     }
 
     const body = await axios.post(url, form, { headers: headers, json: true});
-
-    
 
     return body.data;
 }

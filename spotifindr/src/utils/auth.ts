@@ -1,19 +1,17 @@
-import axios from 'axios';
-
-axios.defaults.withCredentials = true;
+import axios from './setupAxios'
 
 export const checkAuth = async () : Promise<boolean> => {
-    const res = await axios.get('http://localhost:3000/api/getAuth');
+    const res = await axios.get('/api/getAuth');
     return !res.data.ok;
 };
 
 export const login = async (username: string, password: string) : Promise<boolean> => {
-    const res = await axios.post('http://localhost:3000/api/credAuth', {username, password, "type": "login"});
+    const res = await axios.post('/api/credAuth', {username, password, "type": "login"});
     return res.data.ok;
 };
 
 export const loginWithSpotify = async () : Promise<void> => {
-    const res = await axios.get('http://localhost:3000/api/getAuth');
+    const res = await axios.get('/api/getAuth');
     
     if (res.data.ok) {
         window.location.href = res.data.spotURL;
