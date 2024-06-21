@@ -66,4 +66,4 @@ const getTrackFeature = async (accessToken, trackId) => {
     return response.data;
 }
 
-export default { getListeningState, playAlbumByURI, pause, getTopListen};
+export default { getListeningState, playAlbumByURI, pause, getTopListen, getTrackFeature};

@@ -9,3 +9,5 @@ const validating = (func, user) => {
         return func(access_token);
     }
 }
+
+export default validating;
