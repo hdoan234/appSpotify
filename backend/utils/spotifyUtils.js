@@ -49,7 +49,7 @@ const getTopListen = async (accessToken) => {
         Authorization: `Bearer ${accessToken}`,
     };
     
-    response = axios.get(url, { headers: headers });
+    response = await axios.get(url, { headers: headers });
     
 
     return response.data;
@@ -61,7 +61,7 @@ const getTrackFeature = async (accessToken, trackId) => {
         Authorization: `Bearer ${accessToken}`,
     };
 
-    response = axios.get(url, { headers: headers });
+    response = await axios.get(url, { headers: headers });
 
     return response.data;
 }
