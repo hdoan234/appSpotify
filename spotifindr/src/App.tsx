@@ -73,7 +73,7 @@ const App: React.FC = () => {
             {/* <PrivateRoute path="/room/:roomId" exact authenticated={authenticated} component={Room} /> */}
             <Route path="/room/:roomId" exact component={Room} />
             <PrivateRoute path="/chat" exact authenticated={authenticated} component={Chat} />
-            <PrivateRoute path="/matching" exact authenticated={authenticated} component={Matching} />
+            <Route path="/matching" exact component={Matching} />
 
           </IonRouterOutlet>
         </IonSplitPane>
