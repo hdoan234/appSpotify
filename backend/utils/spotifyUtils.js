@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { response } from 'express';
 
 const getListeningState = async (accessToken) => {
     const url = 'https://api.spotify.com/v1/me/player/currently-playing';
@@ -42,4 +43,27 @@ const pause = (accessToken) => {
 
 }
 
-export default { getListeningState, playAlbumByURI, pause};
+const getTopListen = async (accessToken) => {
+    const url = 'https://api.spotify.com/v1/me/top/tracks?limit=50';
+    const headers = {
+        Authorization: `Bearer ${accessToken}`,
+    };
+    
+    response = axios.get(url, { headers: headers });
+    
+
+    return response.data;
+}
+
+const getTrackFeature = async (accessToken, trackId) => {
+    const url = `https://api.spotify.com/v1/audio-features/${trackId}`;
+    const headers = {
+        Authorization: `Bearer ${accessToken}`,
+    };
+
+    response = axios.get(url, { headers: headers });
+
+    return response.data;
+}
+
+export default { getListeningState, playAlbumByURI, pause, getTopListen};

@@ -49,7 +49,7 @@ const Home: React.FC = () => {
         socket.on('greet', (data) => console.log(data))
 
         socket.on('newMessage', (data) => console.log(data))
-        
+
         socket.on('update', (data) => {
             console.log(data)
             setCurrentPlaying(data)

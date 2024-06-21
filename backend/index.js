@@ -73,13 +73,31 @@ const roomMap = new Map()
 const socketIdToRoom = new Map()
 
 io.on('connection', async (socket) => {
-  
-
   if (!socket.request.session.user) {
     socket.emit('unauthorized', 'Unauthorized')
     socket.disconnect()
   }
 
+  const roomDataUpdate = async (ownerId) => {
+    const ownerUser = await getAccount(ownerId)
+    const access_token = ownerUser.access_token
+    
+    try {
+
+      const roomState = await spotifyUtils.getListeningState(access_token)
+
+      return roomState
+
+
+    } catch (e) {
+
+      access_token = await refreshLogin(ownerUser.refresh_token, ownerUser.spotifyId)
+      const roomState = await spotifyUtils.getListeningState(access_token)
+      
+      return roomState
+
+    }
+  }
 
   socket.on('join', async (data) => {
     socket.join(data.room)
@@ -123,24 +141,10 @@ io.on('connection', async (socket) => {
     }
 
     const ownerId = roomMap.get(data.room)["owner"]
+
     
-    const ownerUser = await getAccount(ownerId)
-    const access_token = ownerUser.access_token
-    try {
-
-      const roomState = await spotifyUtils.getListeningState(access_token)
-
-      io.to(data.room).emit('update', roomState)
-
-
-    } catch (e) {
-
-      access_token = await refreshLogin(ownerUser.refresh_token, ownerUser.spotifyId)
-      const roomState = await spotifyUtils.getListeningState(access_token)
-      io.to(data.room).emit('update', roomState)
-
-    }
-
+    const roomState = await roomDataUpdate(ownerId)
+    io.to(data.room).emit('update', roomState)
 
     console.log(spotifyId + " joined " + data.room)
 

@@ -18,7 +18,7 @@ export const redirectToAuth = async () => {
     params.append("client_id", clientId);
     params.append("response_type", "code");
     params.append("redirect_uri", callbackURL);
-    params.append("scope", "streaming app-remote-control user-read-private user-read-email user-read-playback-state user-read-currently-playing user-modify-playback-state");
+    params.append("scope", "user-read-recently-played user-top-read streaming app-remote-control user-read-private user-read-email user-read-playback-state user-read-currently-playing user-modify-playback-state");
     params.append("state", state);
 
     return {

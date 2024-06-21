@@ -7,7 +7,7 @@ import * as auth from '../utils/auth';
 
 import './Matching.css';
 
-const Matching = () => {
+const Matching : React.FC = () => {
     return (
         <IonContent fullscreen className="background">
             {/* <div className="back"></div>
