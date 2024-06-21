@@ -78,5 +78,5 @@ export const getAccessTokenWithRefreshToken = async (refreshToken) => {
 
     const body = await axios.post(url, form, { headers: headers, json: true});
 
-    return body.data;
+    return body.data; 
 }
