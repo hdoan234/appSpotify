@@ -7,6 +7,7 @@ import './Profile.css';
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 import * as userUtil from '../utils/userUtil'; 
 import { UserDataProps } from '../type';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Home: React.FC = () => {
     const [userData, setUserData] = useState<UserDataProps>()
@@ -94,11 +95,9 @@ const Home: React.FC = () => {
         return () => clearInterval(interval)
     }, [progress, currentPlaying])
 
-    // TODO: Loading spinner
+ 
     if (isLoading) {
-        return <animated.div className='loading-background' style={props}> 
-            <IonSpinner name="crescent" style={{ color: "white" }} />
-            </animated.div>
+        return ( <LoadingSpinner /> )
     }
     
 
@@ -151,7 +150,7 @@ const Home: React.FC = () => {
                         <div className="album-image"> 
                             <img  style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src={ currentPlaying.item?.album.images[0].url } alt="" />
                             <p className="title">{currentPlaying.item?.name } </p>
-                            <p style={{fontSize:"0.7rem"}}>{ currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ", "}`) }
+                            <p style={{fontSize:"0.7rem"}}>{currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ", "}`) }
                             </p>
                             <div className="slide-container">
                                 

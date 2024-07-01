@@ -153,22 +153,3 @@ ion-content {
     transition: opacity 2000ms;
 }
 
-.loading-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(5, 5, 5, 0.397);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-}
-
-ion-spinner {
-    width: 8vw;
-    height: 8vh;
-    --color: rgb(255, 255, 255);
-}

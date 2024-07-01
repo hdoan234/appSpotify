@@ -10,6 +10,7 @@ import FriendBlock from '../components/FriendBlock';
 import { FollowUserProps, UserDataProps } from '../type';
 import * as userUtil from '../utils/userUtil';
 import { search } from 'ionicons/icons';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const Home: React.FC = () => {
   const [following, setFollowing] = useState<FollowUserProps[]>([]);
@@ -60,14 +61,12 @@ const Home: React.FC = () => {
   
 
 
+
   return (
     <IonPage>
       <IonContent fullscreen className="container" >
-      {
-        // TODO: Add design to the loading screen, maybe a spinner component since we are going to reuse it
-        !isLoading ? <animated.div className='loading-background' style={props}> 
-        <IonSpinner name="crescent" style={{ color: "white" }} />
-        </animated.div> :
+      {        
+        !isLoading ? <LoadingSpinner isLoading={isLoading} /> :
         <>
         <div className="search-container" >
           <div className="search-bar-component">
@@ -76,10 +75,9 @@ const Home: React.FC = () => {
               {
                 searchData.map((user) => 
                 <div key={user.spotifyId} className="search-result">
-                  <span>
+                  <span style={{padding:"5px"}}>
                     {user.name}
                   </span>
-                  {/* TODO: Add design to the dropdown search results */}
                   {
                     user.spotifyId !== profile?.id &&
                     <button onClick={() => userUtil.followUser(user.spotifyId)} className='follow'>{following.some((follow) => follow.userInfo.spotifyId === user.spotifyId) ? "Followed" : "Follow"}</button>
@@ -92,8 +90,8 @@ const Home: React.FC = () => {
             <img src={profile?.images[1].url} className="user" alt="avatar" /> 
           </a>
         </div>
+        <button className="find-match-button">Find your match</button>
         {
-          // TODO: Add more styling to no following
           following.length == 0 ? <h1 style={{textAlign: "center"}}>Oof... You're not following anyone</h1> :
           <div className="friend-container">
           { following?.map((follow) => <>

@@ -7,11 +7,10 @@
 .friend-name{
     font-size: 2vh;
     align-items: center;
-    color: black;
     display: flex;
     flex-direction: row;
     justify-content: center;
-    color: white;
+    color: rgb(255, 255, 255);
     padding-top: 1vh;
 }
 .friend{
@@ -152,7 +151,7 @@ p.song{
     .friend-content{
         display: flex;
         flex-direction: column;
-        color: black;
+        color: rgb(0, 0, 0);
         align-items: center;
         width: 20vw;
         justify-content: center;

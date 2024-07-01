@@ -52,3 +52,12 @@ export const followUser = async (id : string) : Promise<any> => {
         throw new Error('Error following user');
     }
 };
+
+export const findMatch = async () : Promise<any> => {
+    try {
+        const res = await axios.get('/api/findMatch');
+        return res.data;
+    } catch (e) {
+        throw new Error('Error sending match');
+    }
+}

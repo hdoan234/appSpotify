@@ -65,3 +65,53 @@
 .result-list::-webkit-scrollbar {
     display: none;
 }
+.find-match-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:5vh;
+    width: 12vw;
+    min-width: 140px;
+    margin: 30px auto; 
+    font-size: 1rem;
+    font-family:"comic sans ms", "Arial";
+    background-color: #018b46;
+    border-radius: 15px;
+    transition: background-color ease-in-out 0.2s;
+    margin-top: 5vh;
+}
+.follow{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
+    color: white;
+    background-color: #058549;
+    height: 2vh;
+    width: 5vw;
+    border-radius: 8px;
+    min-width: 70px;
+    margin-top: 5px;
+}
+.result-list{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 10px;
+    color: black;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #A1CEB5;
+}
+.search-result{
+    display: flex;
+    flex-direction: row;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 10px;
+    color: black;
+    width: 70vw;
+
+}

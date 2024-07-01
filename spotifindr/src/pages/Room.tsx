@@ -19,7 +19,7 @@ const Home: React.FC = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [player, setPlayer] = useState<any | null>(null);
     const [sliderProgress, setSliderProgress] = useState<string>("0");
-
+    const [messageArray, setMessageArray]= useState<any[]>([])
 
     const [msg, setMsg] = useState('');
 
@@ -48,7 +48,14 @@ const Home: React.FC = () => {
 
         socket.on('greet', (data) => console.log(data))
 
-        socket.on('newMessage', (data) => console.log(data))
+        socket.on('newMessage', (data) => {
+
+            console.log(data)
+
+            setMessageArray([...messageArray, data])
+            
+            console.log(messageArray)
+        })
 
         socket.on('update', (data) => {
             console.log(data)
@@ -86,9 +93,9 @@ const Home: React.FC = () => {
                     <div>
                     <div className='cover-artist'>
                         <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src={currentPlaying?.item?.album?.images[0]?.url} alt="" />
-                            <p style={{fontSize:"1.2rem"}}>Song</p>
-                                <p style={{fontSize:"0.8rem"}}> Artist </p>
-                                <input className='slider' style={{width: "60%", height:"0.5vh", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" step="0.1" min="1" max="100" value={ sliderProgress} /> 
+                            <p style={{fontSize:"1.2rem", marginTop:"20px"}}>{currentPlaying.item?.name }</p>
+                                <p style={{fontSize:"0.8rem",paddingBottom:"10px"}}>{currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ", "}`) } </p>
+                                <input className='slider' style={{width: "60%", height:"0.5vh", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" step="0.1" min="1" max="100" value={sliderProgress} /> 
                             
                     </div>
 
@@ -104,6 +111,7 @@ const Home: React.FC = () => {
                 }
                 <div className='chatbox-container'>
                     <div className="chatbox"></div>
+                    
                 </div>
                 
             </IonContent>
