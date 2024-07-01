@@ -1,10 +1,10 @@
-import wrapper from './wrapper';
-import { getTopListen, getTrackFeature } from './spotifyUtils';
+import wrapper from '../utils/wrapper.js';
+import utils from '../utils/spotifyUtils.js';
 
 const scoring = async (user1, user2) => {
 
-    const user1Song= (await wrapper(getTopListen, user1)).items;
-    const user2Song= (await wrapper(getTopListen, user2)).items;
+    const user1Song= (await wrapper(utils.getTopListen, user1)).items;
+    const user2Song= (await wrapper(utils.getTopListen, user2)).items;
     const user1TrackId= user1Song.map((song) => song.uri.split(':')[2]);
     const user2TrackId= user2Song.map((song) => song.uri.split(':')[2]);
     
@@ -33,7 +33,7 @@ const scoring = async (user1, user2) => {
     };
 
     for (let i = 0; i < user1TrackId.length; i++) {
-        const user1TrackFeature =await wrapper(getTrackFeature, user1, user1TrackId[i]);
+        const user1TrackFeature =await wrapper(utils.getTrackFeature, user1, user1TrackId[i]);
         for (let key in user1TrackFeature) {
             user1AverageFeature[key]+=user1TrackFeature[key];
         }
@@ -43,7 +43,7 @@ const scoring = async (user1, user2) => {
     }
 
     for( let i=0; i<user2TrackId.length; i++) {
-        const user2TrackFeature =await wrapper(getTrackFeature, user2, user2TrackId[i]);
+        const user2TrackFeature =await wrapper(utils.getTrackFeature, user2, user2TrackId[i]);
         for (let key in user2TrackFeature) {
             user2AverageFeature[key]+=user2TrackFeature[key];
         }

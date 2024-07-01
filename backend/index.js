@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import { redirectToAuth, getAccessToken, getAccessTokenWithRefreshToken } from "./src/spotifyAPI.js"
 import { createAccountWithSpotify, getAccount, getFollowing, getAccountById, sendFollow } from './src/database.js';
 
+import scoring from "./src/scoring.js"
 import { Server } from 'socket.io';
 import { createServer, get } from 'http';
 import session from 'express-session';
@@ -17,7 +18,6 @@ import { PrismaClient } from '@prisma/client';
 import spotifyUtils from './utils/spotifyUtils.js';
 
 import dotenv from "dotenv"
-import e from 'express';
 
 
 dotenv.config({ path: ['./.env'] })
@@ -613,6 +613,36 @@ app.get("/api/sendFollow", authMiddleware, async (req, res) => {
 
 })
 
+app.get("/api/findMatch", authMiddleware, async (req, res) => {
+  const currentUser = await getAccount(req.session.user.spotifyId)
+
+  if (!user) {
+    res.send({
+      "ok": false,
+      "message": "User not found"
+    })
+    return
+  }
+
+  const allUsers = await prisma.user.findMany();
+
+  const userScores = allUsers.map(async (user) => {
+    const score = await scoring(currentUser.spotifyId, user.spotifyId)
+    return {
+      "user": user,
+      "score": score
+    }
+  })
+
+  userScores = await Promise.all(userScores)
+  userScores.sort((a, b) => a.score - b.score)
+
+  res.send({
+    "ok": true,
+    "matches": userScores.slice(4 ? userScores.length > 4 : userScores.length)
+  })
+
+})
 
 httpServer.listen(3000, () => {
     console.log('Server is running on port 3000');
