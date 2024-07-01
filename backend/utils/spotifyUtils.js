@@ -1,5 +1,4 @@
 import axios from 'axios'
-import { response } from 'express';
 
 const getListeningState = async (accessToken) => {
     const url = 'https://api.spotify.com/v1/me/player/currently-playing';
@@ -55,8 +54,10 @@ const getTopListen = async (accessToken) => {
     return response.data;
 }
 
-const getTrackFeature = async (accessToken, trackId) => {
-    const url = `https://api.spotify.com/v1/audio-features/${trackId}`;
+const getTrackFeature = async (accessToken, trackIds) => {
+
+    const url = `https://api.spotify.com/v1/audio-features?ids=${trackIds.join('%2C')}`;
+
     const headers = {
         Authorization: `Bearer ${accessToken}`,
     };
@@ -64,6 +65,7 @@ const getTrackFeature = async (accessToken, trackId) => {
     const response = await axios.get(url, { headers: headers });
 
     return response.data;
+
 }
 
 export default { getListeningState, playAlbumByURI, pause, getTopListen, getTrackFeature };

@@ -616,7 +616,7 @@ app.get("/api/sendFollow", authMiddleware, async (req, res) => {
 app.get("/api/findMatch", authMiddleware, async (req, res) => {
   const currentUser = await getAccount(req.session.user.spotifyId)
 
-  if (!user) {
+  if (!currentUser) {
     res.send({
       "ok": false,
       "message": "User not found"
@@ -626,10 +626,12 @@ app.get("/api/findMatch", authMiddleware, async (req, res) => {
 
   const allUsers = await prisma.user.findMany();
 
-  const userScores = allUsers.map(async (user) => {
-    const score = await scoring(currentUser.spotifyId, user.spotifyId)
+  let userScores = allUsers.filter((user) => user.spotifyId != currentUser.spotifyId).map(async (user) => {
+    if (user.spotifyId == currentUser.spotifyId) return 0;
+      
+    const score = await scoring(currentUser, user)
     return {
-      "user": user,
+      "user": { spotifyId: user.spotifyId, displayName: user.name, imageUrl: user.imageUrl },
       "score": score
     }
   })

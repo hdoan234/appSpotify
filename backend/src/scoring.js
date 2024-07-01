@@ -5,6 +5,7 @@ const scoring = async (user1, user2) => {
 
     const user1Song= (await wrapper(utils.getTopListen, user1)).items;
     const user2Song= (await wrapper(utils.getTopListen, user2)).items;
+
     const user1TrackId= user1Song.map((song) => song.uri.split(':')[2]);
     const user2TrackId= user2Song.map((song) => song.uri.split(':')[2]);
     
@@ -32,27 +33,32 @@ const scoring = async (user1, user2) => {
         tempo: 0,
     };
 
-    for (let i = 0; i < user1TrackId.length; i++) {
-        const user1TrackFeature =await wrapper(utils.getTrackFeature, user1, user1TrackId[i]);
-        for (let key in user1TrackFeature) {
-            user1AverageFeature[key]+=user1TrackFeature[key];
+    const user1TrackFeature =await wrapper(utils.getTrackFeature, user1, user1TrackId);
+
+    user1TrackFeature.audio_features.forEach((track) => {
+        for (let key in user1AverageFeature) {
+            user1AverageFeature[key]+= track[key];
         }
-    }
+    })
+
     for (let key in user1AverageFeature) {
         user1AverageFeature[key]/=user1TrackId.length;
     }
 
-    for( let i=0; i<user2TrackId.length; i++) {
-        const user2TrackFeature =await wrapper(utils.getTrackFeature, user2, user2TrackId[i]);
-        for (let key in user2TrackFeature) {
-            user2AverageFeature[key]+=user2TrackFeature[key];
+    
+    const user2TrackFeature =await wrapper(utils.getTrackFeature, user2, user2TrackId);
+    user2TrackFeature.audio_features.forEach((track) => {
+        for (let key in user2AverageFeature) {
+            user2AverageFeature[key]+= track[key];
         }
-    }
+    })
+
+
     for (let key in user2AverageFeature) {
         user2AverageFeature[key]/=user2TrackId.length;
     }
 
-    const score= 0;
+    let score= 0;
     for (let key in user1AverageFeature) {
         score+= (user1AverageFeature[key]-user2AverageFeature[key])**2;
     }
