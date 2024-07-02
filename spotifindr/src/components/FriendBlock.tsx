@@ -6,7 +6,6 @@ import "./FriendBlock.css";
 const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' /%3E%3C/svg%3E";
 
 const FriendBlock = ({children, url, currentPlaying, ...props} : any) : any => {
-    const sliderProgress = (parseInt(currentPlaying?.progress_ms) /  parseInt(currentPlaying?.item?.duration_ms) * 100).toFixed()
     
     const [progress, setProgress] = useState(currentPlaying?.progress_ms)
 
@@ -16,12 +15,12 @@ const FriendBlock = ({children, url, currentPlaying, ...props} : any) : any => {
                 if (prev >= parseInt(currentPlaying?.item?.duration_ms)) {
                     return prev
                 }
-                return prev + 1000
+                return prev + 100
             })
             
             console.log(progress)
 
-        }, 1000)
+        }, 100)
         return () => clearInterval(interval)
     }, [currentPlaying])
 
@@ -43,7 +42,7 @@ const FriendBlock = ({children, url, currentPlaying, ...props} : any) : any => {
                         <p className="time-friend">
                             {timeFormatter(progress + "") }
                         </p>
-                        <input className='slider-friend' style={{ width: "100%", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" min="1" max="100" value={ sliderProgress} /> 
+                        <input className='slider-friend' style={{ width: "100%", background: `linear-gradient(90deg, #04AA6D ${(parseInt(progress) /  parseInt(currentPlaying?.item?.duration_ms) * 100).toFixed(2)}%, white ${(parseInt(progress) /  parseInt(currentPlaying?.item?.duration_ms) * 100).toFixed(2)}%)`}} readOnly type="range" step="0.01" min="1" max="100" value={ (parseInt(progress) /  parseInt(currentPlaying?.item?.duration_ms) * 100).toFixed(2)} /> 
                         <p className="time-friend">
                             { timeFormatter(currentPlaying?.item?.duration_ms) }
                         </p>
