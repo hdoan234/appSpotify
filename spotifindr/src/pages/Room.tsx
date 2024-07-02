@@ -1,15 +1,13 @@
 import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline } from 'ionicons/icons';
 import axios from 'axios';
-
 import socket from '../websocket';
-
 import './Room.css';
 import { FollowUserProps, UserDataProps } from '../type';
 import * as userUtil from '../utils/userUtil';
-
 import { useParams } from 'react-router';
+import FullScreen from '../components/Fullscreen'; 
 
 const Home: React.FC = () => {
     
@@ -20,7 +18,8 @@ const Home: React.FC = () => {
     const [player, setPlayer] = useState<any | null>(null);
     const [sliderProgress, setSliderProgress] = useState<string>("0");
     const [messageArray, setMessageArray]= useState<any[]>([])
-
+    const [chatFullscreen, setChatFullscreen] = useState<boolean>(false)
+    const ref = useRef<any>(null)
     const [msg, setMsg] = useState('');
 
     const { roomId } : { roomId : string } = useParams()
@@ -73,6 +72,13 @@ const Home: React.FC = () => {
         }
     }, [])
 
+    document.addEventListener('click', (event) => {
+        const excludedSelector = '.chatbox-container';
+        if (event.target instanceof HTMLElement && !event.target.closest(excludedSelector)) {
+            setChatFullscreen(false)
+        }
+        
+    });
 
     return(
         <IonPage>
@@ -109,9 +115,16 @@ const Home: React.FC = () => {
                     
                 </div>
                 }
-                <div className='chatbox-container'>
-                    <div className="chatbox"></div>
+                <div className='chatbox-container' >
+                    <div className="chatbox" onClick={
+                        () => {
+                            setChatFullscreen(true)
+                        }
+                    }>
                     
+
+                    </div>
+                    { chatFullscreen && <FullScreen  /> } 
                 </div>
                 
             </IonContent>

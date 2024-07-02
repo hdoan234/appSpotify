@@ -40,7 +40,7 @@ const Page: React.FC = () => {
         <div className="form-container">
 
 
-            <h1 className="header">SpotiFind</h1>
+            <div className="header">SpotiFind</div>
             <form className='login-form' onSubmit={handleSubmit}>
                 <div className="input-container">
                     <div className='icon-container'>

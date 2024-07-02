@@ -9,15 +9,14 @@ import './Chat.css';
 
 const Chat = () => {
     return (
-            <IonContent fullscreen className="background">
-                <p className='room-name'> Chat Room</p>
-                <div className='line'>
-                    
-                </div>
-                <textarea className='chat-box' placeholder='Type a message...'></textarea>
-                <button className='send-button'> <IonIcon icon={sendOutline} className="send-outline"> </IonIcon></button>
-            </IonContent>
-
+        <IonContent>
+            <p  className='room-name'>Chat Room</p>
+            <div className='line'>
+                
+            </div>
+            <textarea className='chat-box' placeholder='Type a message...'></textarea>
+            <button className='send-button'> <IonIcon icon={sendOutline} className="send-outline"> </IonIcon></button>
+        </IonContent>
     )
 }
 

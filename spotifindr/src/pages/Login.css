@@ -23,13 +23,15 @@ html {
 }
 
 .header{
-    font-size: 58px;
+    font-size: 3.5rem;
     background: -webkit-linear-gradient(-50deg,#08883A 40%, #65ffaa 70%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: 900;
     font-family: "Lato", "Comic Sans";
     letter-spacing: -2px;
+    text-align: center;
+
 }
 
 .form-container {
@@ -38,16 +40,16 @@ html {
     text-align: center;
     margin: 8vh 10vw 0 10vw;
     max-width: 400px;
-    padding-top: 15vh;
+    padding-top: 7vh;
     background-color: rgba(255, 255, 255, 0.2);
     border-radius: 15px;
-    backdrop-filter: blur(11px);
+    backdrop-filter: blur(11px); 
 }
 
 .login-form {
     display: flex;
     flex-direction: column;
-    margin-top: 10vh;
+    margin-top: 6vh;
     padding: top 0;;
 }
 
@@ -65,6 +67,7 @@ html {
     border-radius: 10px;
     text-align: left;
     color: black;
+
 }
 a, a:active, a:visited, a:link {
     text-decoration: none;
@@ -165,19 +168,11 @@ ion-icon {
 #changeState{
     text-align: center;
     margin: 40px;
-    padding-top: 50px;
+    padding-top: 30px;
     border-top: solid #84f0b363;
+    font-size: 0.8rem;    
 }
 
-@media screen and (max-height: 710px) {
-    .header {
-        display: none;
-        margin: 0;
-    }
-    .login-form {
-        margin-top: 5vh; 
-    }
-}
 @media screen and (max-width: 1000px) {
     #slogan {
         display: none
