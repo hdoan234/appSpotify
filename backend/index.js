@@ -506,7 +506,7 @@ app.get('/api/currentFollow', authMiddleware, async (req, res) => {
 
   for (let followedUser in user.followers) {
     const account = await getAccountById(user.followers[followedUser].followerId)
-    followerObj.push(account)
+    followerObj.push({ name: account.name, imageUrl: account.imageUrl, spotifyId: account.spotifyId})
   }
 
   let playingStates = userObj.map(async (user) => {
@@ -526,12 +526,14 @@ app.get('/api/currentFollow', authMiddleware, async (req, res) => {
       }
     }
 
+    const userInfo = { name: user.name, imageUrl: user.imageUrl, spotifyId: user.spotifyId}
+
     try {
       const profileRes = await getData(user.access_token)
-  
+      
       return {
         "ok": true,
-        "userInfo": user,
+        "userInfo": userInfo,
         "playing": profileRes.data,
       }
     } catch (e) {
@@ -542,13 +544,13 @@ app.get('/api/currentFollow', authMiddleware, async (req, res) => {
     
         return {
           "ok": true,
-          "userInfo": user,
+          "userInfo": userInfo,
           "playing": profileRes.data,
         }
       } catch (err) {
         return {
           "ok": false,
-          "userInfo": user,
+          "userInfo": userInfo,
           "message": err.message
         }
       }
@@ -571,7 +573,7 @@ app.get('/api/logout', async (req, res) => {})
 app.get('/api/allUsers', async (req, res) => {
   const users = await prisma.user.findMany()
 
-  res.send(users)
+  res.send(users.map((user) => { return { "name": user.name, "imageUrl": user.imageUrl, "spotifyId": user.spotifyId} } ))
 })
 
 app.get("/api/sendFollow", authMiddleware, async (req, res) => {
