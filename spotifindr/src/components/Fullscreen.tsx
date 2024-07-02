@@ -3,7 +3,7 @@ import './Fullscreen.css'
 import React, { useState } from 'react';
 
 
-const fullscreen = ({ ref, onFunction } : any) => {
+const fullscreen = ({ onClick, onChange } : any) => {
     const [messages, setMessages] = useState([
         {id:1 , text: 'Hello!',sender: 'user'},
         {id:2 , text: 'Hi!',sender: 'assistant'}
@@ -29,8 +29,8 @@ const fullscreen = ({ ref, onFunction } : any) => {
                     </div>
                     
                     <div className="chat-input">
-                        <input type="text" placeholder="Aa" />
-                        <button className="sending-button">➤</button>
+                        <input type="text" onChange={onChange} placeholder="Aa" />
+                        <button onClick={onClick} className="sending-button">➤</button>
                     </div>
                     </div>
         </div>

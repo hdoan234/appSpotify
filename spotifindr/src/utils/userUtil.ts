@@ -1,8 +1,7 @@
 
-import { UserDataProps } from '../type';
 import axios from './setupAxios'
 
-export const getUser = async () : Promise<UserDataProps> => {
+export const getUser = async () : Promise<any> => {
     const res = await axios.get('/api/profile');
     return res.data.user;
 };

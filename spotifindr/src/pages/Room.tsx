@@ -1,6 +1,6 @@
 import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react";
-import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline, image } from 'ionicons/icons';
+import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline, image, send } from 'ionicons/icons';
 import axios from 'axios';
 import socket from '../websocket';
 import './Room.css';
@@ -17,13 +17,13 @@ const Home: React.FC = () => {
     const [sliderProgress, setSliderProgress] = useState<string>("0");
     const [messageArray, setMessageArray]= useState<any[]>([])
     const [chatFullscreen, setChatFullscreen] = useState<boolean>(false)
-    const [msg, setMsg] = useState('');
+    const [currentMessage, setCurrentMessage] = useState('')
 
     const { roomId } : { roomId : string } = useParams()
 
     const sendMessage = () => {
-        console.log(msg)
-        socket.emit('sendMessage', { room: roomId, message: msg, userId: profile?.spotifyId, imageUrl: profile?.imageUrl, userName: profile?.name })
+        console.log(currentMessage)
+        socket.emit('sendMessage', { room: roomId, message: currentMessage, userId: profile?.id, imageUrl: profile?.images[0].url, userName: profile?.display_name })
     }
 
     const play = () => {
@@ -37,7 +37,7 @@ const Home: React.FC = () => {
     useEffect(() => {
         socket.connect()
 
-        userUtil.getUser().then((data) => { setProfile(data) })
+        userUtil.getUser().then((data) => { setProfile(data); console.log(data) })
 
         socket.emit('join', { room: roomId })
 
@@ -47,9 +47,8 @@ const Home: React.FC = () => {
         socket.on('greet', (data) => console.log(data))
 
         socket.on('newMessage', (data) => {
-
             setMessageArray([...messageArray, data])
-            
+            console.log("new message received")
             console.log(messageArray)
         })
 
@@ -118,10 +117,11 @@ const Home: React.FC = () => {
                             setChatFullscreen(true)
                         }
                     }>
-                    
 
                     </div>
-                    { chatFullscreen && <FullScreen  /> } 
+                    { chatFullscreen && <FullScreen onClick={() => sendMessage()} onChange={(e : any) => {
+                        setCurrentMessage(e.target.value)
+                    }} /> } 
                 </div>
                 
             </IonContent>
