@@ -569,7 +569,16 @@ app.get('/api/currentFollow', authMiddleware, async (req, res) => {
 })
 
 
-app.get('/api/logout', async (req, res) => {})
+app.get('/api/logout', authMiddleware, async (req, res) => {
+
+  req.session.destroy()
+
+  res.send({
+    "ok": true,
+    "message": "Logged out"
+  })
+
+})
 app.get('/api/allUsers', async (req, res) => {
   const users = await prisma.user.findMany()
 

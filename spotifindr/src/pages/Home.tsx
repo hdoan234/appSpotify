@@ -24,7 +24,8 @@ const Home: React.FC = () => {
   const [props, api] = useSpring(() => ({ 
     from: {opacity: isLoading ? 1 : 0},
     to: {opacity: 0},}))
-    
+  const [dropDownOpen, setDropDownOpen] = useState(false);
+
   const fetchData = async() => {
       const follow = userUtil.getCurrentFollow();
       const profile = userUtil.getUser();
@@ -86,9 +87,23 @@ const Home: React.FC = () => {
               }
             </div>
           </div>
-          <a href="/profile">
-            <img src={profile?.images[1]?.url} className="user" alt="avatar" /> 
-          </a>
+          <div>
+            <button className='profile-button' onClick={() => setDropDownOpen(!dropDownOpen)}>
+              <img src={profile?.images[1]?.url} className="user" alt="avatar" /> 
+            </button>
+            { dropDownOpen && 
+              <div className="dropdown">
+                <div onClick={() => document.location = "/profile"} className="menu-items">
+                  <span>Profile</span>
+                  <span className="arrow">&gt;</span>
+                </div>
+                <div onClick={async () => await userUtil.logout()} className="menu-items">
+                  <span>Log Out</span>
+                  <span className="arrow">&gt;</span>
+                </div>
+              </div>
+            }
+          </div>
         </div>
         <a href="/matching">
           <button className="find-match-button">Find your match</button>
