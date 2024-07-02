@@ -91,8 +91,8 @@ io.on('connection', async (socket) => {
 
     } catch (e) {
 
-      access_token = await refreshLogin(ownerUser.refresh_token, ownerUser.spotifyId)
-      const roomState = await spotifyUtils.getListeningState(access_token)
+      const new_access_token = await refreshLogin(ownerUser.refresh_token, ownerUser.spotifyId)
+      const roomState = await spotifyUtils.getListeningState(new_access_token)
       
       return roomState
 
