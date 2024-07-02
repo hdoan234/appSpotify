@@ -43,7 +43,7 @@ const Home: React.FC = () => {
     }
 
     setSearchData(fetchedSearch.filter((user) => {
-      return user.name.toLowerCase().includes(searchEntry) || user.email.includes(searchEntry)
+      return user.name.toLowerCase().includes(searchEntry)
     }))
     console.log(searchData.map((user) => user.name))
   }

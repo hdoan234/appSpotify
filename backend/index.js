@@ -212,7 +212,7 @@ io.on('connection', async (socket) => {
 
   socket.on('sendMessage', (data) => {
     console.log(data.message)
-    socket.to(data.room).emit('newMessage', data.message)
+    socket.to(data.room).emit('newMessage', { userImage: data.userImage, userId: data.userId, message: data.message, userName: data.userName})
   })
 
   socket.on('disconnect', () => {

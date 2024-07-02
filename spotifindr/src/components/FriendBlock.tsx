@@ -10,11 +10,14 @@ const FriendBlock = ({children, url, currentPlaying, ...props} : any) : any => {
     const [progress, setProgress] = useState(currentPlaying?.progress_ms)
 
     useEffect(() => {
+        if (!currentPlaying.is_playing) return
+
+        setProgress(parseInt(currentPlaying.progress_ms))
+        
         const interval = setInterval(() => {
+            if (progress >= parseInt(currentPlaying.duration_ms)) return () => clearInterval(interval)
+            
             setProgress((prev : number) => {
-                if (prev >= parseInt(currentPlaying?.item?.duration_ms)) {
-                    return prev
-                }
                 return prev + 100
             })
             
