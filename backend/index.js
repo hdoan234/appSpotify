@@ -30,9 +30,9 @@ const sessionMiddleware = session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    secure: false,
-    // sameSite: 'none',
-    // domain: "https://guyana-ba-nut-epic.trycloudflare.com"
+    httpOnly: true,
+    secure: !!process.env.CLOUDFLARE_API_URL,
+    sameSite: !!process.env.CLOUDFLARE_API_URL ? 'none' : 'lax',
   }
 })
 
@@ -359,7 +359,7 @@ app.get("/callback", async (req, res) => {
 
   console.log(result.data.id)
 
-  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token, access_token, result.data.images[1].url)
+  if (!account) await createAccountWithSpotify(result.data.email, result.data.id, result.data.display_name, refresh_token, access_token, result.data?.images[1]?.url)
   else {
     await prisma.user.update({
       where: {
@@ -641,7 +641,7 @@ app.get("/api/findMatch", authMiddleware, async (req, res) => {
 
   res.send({
     "ok": true,
-    "matches": userScores.slice(4 ? userScores.length > 4 : userScores.length)
+    "matches": userScores
   })
 
 })

@@ -3,9 +3,9 @@ import { useState, useEffect } from "react"
 
 import "./FriendBlock.css";
 
+const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' /%3E%3C/svg%3E";
 
-
-const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
+const FriendBlock = ({children, url, currentPlaying, ...props} : any) : any => {
     const sliderProgress = (parseInt(currentPlaying?.progress_ms) /  parseInt(currentPlaying?.item?.duration_ms) * 100).toFixed()
     
     const [progress, setProgress] = useState(currentPlaying?.progress_ms)
@@ -25,14 +25,13 @@ const FriendBlock = ({children, url, key, currentPlaying} : any) : any => {
 
     return (
         
-        <div key={key} className="friend">
+        <div key={props.key} className="friend">
             <div className="friend-content">
-                <img className="friend-ava" src={url} alt="avatar" />
+                <img className="friend-ava" src={url || defaultAvatar} alt="avatar" />
                 <div className="friend-name">{children}</div>
             </div>
-            {/* TODO: Add design to each friend block */}
             {
-                currentPlaying && currentPlaying?.is_playing ?
+                currentPlaying && currentPlaying?.item ?
                 <div className="friend-playing">
                     <div className="progress-slider">
                         <p className="time-friend">

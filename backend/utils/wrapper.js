@@ -1,12 +1,26 @@
 import { getAccessTokenWithRefreshToken } from "../src/spotifyAPI.js";
+import { PrismaClient } from "@prisma/client";
 
 const validating = async (func, user, ...rest) => {
     try {
-        return func(user.access_token, ...rest);
+        return await func(user.access_token, ...rest);
     } catch (e) {
-        const { access_token } = await getAccessTokenWithRefreshToken(user.refreshToken);
+        const prisma = new PrismaClient();
+        console.log(e)
+        const newToken = await getAccessTokenWithRefreshToken(user.refresh_token);
+        user.access_token = newToken.access_token;
 
-        return func(access_token, ...rest);
+        await prisma.user.update({
+            where: {
+                spotifyId: user.spotifyId
+            },
+            data: {
+                access_token: newToken.access_token,
+                refresh_token: newToken.refresh_token
+            }
+        })
+
+        return await func(user.access_token, ...rest);
     }
 }
 

@@ -5,26 +5,32 @@ import './Matching.css';
 import { FollowUserProps, UserDataProps } from '../type';
 import * as userUtil from '../utils/userUtil'; 
 
-
 const Matching = () => {
     const [profile, setProfile] = useState<UserDataProps>();
     const [isLoading, setIsLoading] = useState(false);
     const [show, setShow] = useState(false);
     const [matchArray, setMatchArray] = useState<any[]>([])
+    const [matchStarted, setMatchStarted] = useState(false)
 
-    const handleClick = async () => {
+    const handleClick = () => {
         setIsLoading(true)
+        setMatchStarted(true)
 
-        const response = await userUtil.findMatch()
-        
-        setMatchArray(response.matches)
-        
-        console.log(response.matches)
-
-        setTimeout(() => {
-            setShow(true)
+        new Promise(async (resolve) => {
+            const response = await userUtil.findMatch()
+            setMatchArray(response.matches)
+            
+            console.log(response.matches)
+            setTimeout(() => {
+                resolve("done")
+            }, 5000)
+        })
+        .then(() => {
             setIsLoading(false)
-        }, 5000)
+            setShow(true)
+        })
+        
+        
     }
 
     useEffect(() => {
@@ -41,18 +47,16 @@ const Matching = () => {
     }, [])
     return (
         <IonContent fullscreen className="background">
-            {/* <div className="back"></div>
-             */}
-                <p className='found'>{ show && "Found your match!" }</p>
+            <p style={show ? { opacity: 1 } : {}} className='found'>Found your match!</p>
             <div className="profiles">
-                <img className="user2" src={profile?.images[1].url} alt="avatar" /> 
+                <img className="user1" style={matchStarted ? { left: '50%', transform: "translateX(100%)", opacity: show ? 0 : 1 } : {}} src={"https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg"} alt="" />
+                <img className="user2" style={show ? {left: "59%", opacity: "1" } : {left: "59%", opacity: 0 }} src={show ? matchArray[0].user.imageUrl : "https://t4.ftcdn.net/jpg/05/49/98/39/360_F_549983970_bRCkYfk0P6PP5fKbMhZMIb07mCJ6esXL.jpg"} alt="" />
                 <div className="heart"></div>
-                
-                <img className="user1" src={show ? matchArray[0].user.imageUrl : "https://www.svgrepo.com/show/105517/user-icon.svg"} alt="" />
-                
+                <img className="user2" style={matchStarted ? { transform: "translateX(-100%)" } : {}} src={profile?.images[1]?.url} alt="avatar" /> 
             </div>
-            <button onClick={() => handleClick()} className="explore">{ show ? `See ${matchArray[0].user.displayName}'s Taste` : "Start Matching!" }</button>
-            <button className="chat">{ show ? `Message ${matchArray[0].user.displayName}` : "Return to Home" }</button>
+            <button onClick={() => handleClick()} className="explore">{  isLoading ? "Finding..." : show ? `See ${matchArray[0].user.displayName}'s Taste` : "Start Matching!" }</button>
+            { show && <button className="chat">Message {matchArray[0].user.displayName}</button> }
+            <button className="chat" onClick={() => document.location = "/home" }> Return to Home</button>
 
         </IonContent>   
     )

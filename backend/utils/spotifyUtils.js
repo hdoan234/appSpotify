@@ -6,11 +6,15 @@ const getListeningState = async (accessToken) => {
         'Authorization': `Bearer ${accessToken}`
     };
 
-    const result = await axios.get(url, {
-        headers: headers
-    });
-
-    return result.data;
+    try {
+        const result = await axios.get(url, {
+            headers: headers
+        });
+    
+        return result.data;
+    } catch (e) {
+        throw e;
+    }
 }
 
 const playAlbumByURI = (uri, accessToken, albumPosition, timeFrame) => {
@@ -28,7 +32,11 @@ const playAlbumByURI = (uri, accessToken, albumPosition, timeFrame) => {
         position_ms: timeFrame
     };
 
-    axios.put(url, body, { headers: headers });
+    try {
+        axios.put(url, body, { headers: headers });
+    } catch (e) {
+        throw e;
+    }
 
 }
 
@@ -38,20 +46,28 @@ const pause = (accessToken) => {
         Authorization: `Bearer ${accessToken}`,
     };
 
-    axios.put(url, {}, { headers: headers });
-
+    try{
+        axios.put(url, {}, { headers: headers });
+    } catch (e) {
+        throw e;
+    }
 }
 
 const getTopListen = async (accessToken) => {
-    const url = 'https://api.spotify.com/v1/me/top/tracks?limit=50';
+    const url = 'https://api.spotify.com/v1/me/top/tracks?limit=50&time_range=long_term';
     const headers = {
         Authorization: `Bearer ${accessToken}`,
     };
     
-    const response = await axios.get(url, { headers: headers });
+    try {
+
+        const response = await axios.get(url, { headers: headers });
+        return response.data;
+    }catch (e) {
+        throw e;
+    }
     
 
-    return response.data;
 }
 
 const getTrackFeature = async (accessToken, trackIds) => {
@@ -62,9 +78,14 @@ const getTrackFeature = async (accessToken, trackIds) => {
         Authorization: `Bearer ${accessToken}`,
     };
 
-    const response = await axios.get(url, { headers: headers });
+    try{
+        const response = await axios.get(url, { headers: headers });
 
-    return response.data;
+        return response.data;
+    }catch (e) {
+        throw e;
+    }
+
 
 }
 

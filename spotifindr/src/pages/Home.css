@@ -74,12 +74,15 @@
     min-width: 140px;
     margin: 30px auto; 
     font-size: 1rem;
-    font-family:"comic sans ms", "Arial";
     background-color: #018b46;
     border-radius: 15px;
     transition: background-color ease-in-out 0.2s;
     margin-top: 5vh;
 }
+.find-match-button:hover{
+    background-color: #058549;
+}
+
 .follow{
     display: flex;
     flex-direction: row;

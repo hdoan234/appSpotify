@@ -12,6 +12,8 @@ import * as userUtil from '../utils/userUtil';
 import { search } from 'ionicons/icons';
 import LoadingSpinner from '../components/LoadingSpinner';
 
+const defaultAvatar = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' /%3E%3C/svg%3E";
+
 const Home: React.FC = () => {
   const [following, setFollowing] = useState<FollowUserProps[]>([]);
   const [fetchedSearch, setFetchedSearch] = useState<any[]>([])
@@ -58,8 +60,6 @@ const Home: React.FC = () => {
       setFollowing(data.following)
     })
   }, 5000)
-  
-
 
 
   return (
@@ -71,10 +71,10 @@ const Home: React.FC = () => {
         <div className="search-container" >
           <div className="search-bar-component">
             <IonSearchbar className="search-bar" onIonInput={searchHandler} onIonFocus={() => setSearchFocus(true)} onIonBlur={() => setSearchFocus(false)}></IonSearchbar>
-            <div onFocus={() => setSearchFocus(true)} className="result-list" style={{ display: `${searchFocus ? "inline" : "none"}` }}>
+            <div onFocus={() => setSearchFocus(true)} className="result-list" style={{ display: `${searchFocus ? "inline" : "none"}`, zIndex: 999 }}>
               {
-                searchData.map((user) => 
-                <div key={user.spotifyId} className="search-result">
+                searchData.map((user, index) => 
+                <div key={index} className="search-result">
                   <span style={{padding:"5px"}}>
                     {user.name}
                   </span>
@@ -87,17 +87,17 @@ const Home: React.FC = () => {
             </div>
           </div>
           <a href="/profile">
-            <img src={profile?.images[1].url} className="user" alt="avatar" /> 
+            <img src={profile?.images[1]?.url} className="user" alt="avatar" /> 
           </a>
         </div>
-        <button className="find-match-button">Find your match</button>
+        <a href="/matching">
+          <button className="find-match-button">Find your match</button>
+        </a>
         {
           following.length == 0 ? <h1 style={{textAlign: "center"}}>Oof... You're not following anyone</h1> :
           <div className="friend-container">
-          { following?.map((follow) => <>
-            <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> 
-            <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> 
-            <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={follow.userInfo.spotifyId} >{follow.userInfo.name}</FriendBlock> 
+          { following?.map((follow, index) => <>
+            <FriendBlock url={follow.userInfo.imageUrl} currentPlaying={follow.ok ? follow.playing : null} key={index}>{follow.userInfo.name}</FriendBlock> 
           </>)
 }
           </div>

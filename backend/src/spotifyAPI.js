@@ -1,7 +1,7 @@
 import crypto from "crypto"
 const clientId = "bc9f189f3fcc42e1934d09886c74aa1e"
 const clientSecret = "ef343bf5d97245e581abbfbabae45c68"
-const callbackURL = (process.env.REACT_APP_API_URL ? process.env.REACT_APP_API_URL : "http://localhost:3000/") + "callback"
+const callbackURL = (process.env.CLOUDFLARE_API_URL ? process.env.CLOUDFLARE_API_URL : "http://localhost:3000/") + "callback"
 
 import axios from "axios"
 

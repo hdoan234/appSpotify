@@ -5,8 +5,11 @@
     width: auto;
     height: auto;
     font-family:  'Franklin Gothic Medium',Tahoma, Geneva, Verdana, sans-serif;
-    color: white;
+    color: rgba(255, 255, 255);
+    opacity: 0;
     margin-top: 5vh;
+    transition: opacity 0.5s;
+    font-weight: bold;
 }
 .profiles{
     display: flex;
@@ -22,90 +25,98 @@
     height: 18vw;
     width: 18vw;
     object-fit: cover;
-
+    transition: transform 1s, opacity 1s;
+  }
+.user2{
+  top: 999;
+  position: absolute;
 }
 
-  .center {
-    display: flex;
-  }
-  
-  .back {
-    position: fixed;
-    padding: 0;
-    margin: 0;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: white;
-    animation-name: backdiv;
-    animation-duration: 1s; 
-    animation-iteration-count: infinite;
-  }
-  
-  .heart {
-    position: absolute;
-    margin: auto;
-    background-color: #DAF1DE;
-    height: 4vw; 
-    width: 4vw; 
-    transform: rotate(-45deg);
-    animation-name: beat;
-    animation-duration: 1s;
-    animation-iteration-count: infinite;
-  }
-  
-  .heart:after {
-    background-color: #DAF1DE;
-    content: "";
-    border-radius: 50%;
-    position: absolute;
-    width: 4vw; 
-    height: 4vw; 
-    top: 0px;
-    left: 2vw; 
-  }
-  
-  .heart:before {
-    background-color: #DAF1DE;
-    content: "";
-    border-radius: 50%;
-    position: absolute;
-    width: 4vw; 
-    height: 4vw; 
-    top: -2vw; 
-    left: 0px;
-  }
-  
-  @keyframes backdiv {
-    50% {
-      background: #DAF1DE;
-    }
-  }
-  
-  @keyframes beat {
-    0% {
-      transform: scale(1) rotate(-45deg);
-    }
-    50% {
-      transform: scale(0.6) rotate(-45deg);
-    }
-  }
-  
+.user1 {
+  opacity: 0;
+}
 
-  .explore{
-    border-radius: 20px;
-    height: 6vh;
-    width: 30vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0,0,0, 0.3);
-    color: white;
-    margin: 0 auto;
-    margin-top: 7vh;
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-    font-size: 1.2em;
+.center {
+  display: flex;
+}
+
+.back {
+  position: fixed;
+  padding: 0;
+  margin: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  animation-name: backdiv;
+  animation-duration: 1s; 
+  animation-iteration-count: infinite;
+}
+
+.heart {
+  position: absolute;
+  margin: auto;
+  background-color: #DAF1DE;
+  height: 4vw; 
+  width: 4vw; 
+  transform: rotate(-45deg);
+  animation-name: beat;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+}
+
+.heart:after {
+  background-color: #DAF1DE;
+  content: "";
+  border-radius: 50%;
+  position: absolute;
+  width: 4vw; 
+  height: 4vw; 
+  top: 0px;
+  left: 2vw; 
+}
+
+.heart:before {
+  background-color: #DAF1DE;
+  content: "";
+  border-radius: 50%;
+  position: absolute;
+  width: 4vw; 
+  height: 4vw; 
+  top: -2vw; 
+  left: 0px;
+}
+
+@keyframes backdiv {
+  50% {
+    background: #DAF1DE;
+  }
+}
+
+@keyframes beat {
+  0% {
+    transform: scale(1) rotate(-45deg);
+  }
+  50% {
+    transform: scale(0.6) rotate(-45deg);
+  }
+}
+
+
+.explore{
+  border-radius: 20px;
+  height: 6vh;
+  width: 30vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0,0,0, 0.3);
+  color: white;
+  margin: 0 auto;
+  margin-top: 7vh;
+  font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 1.2em;
 }
 .explore:hover{
     background-color: rgba(0, 18, 7, 0.849);
@@ -121,12 +132,11 @@
     color: white;
     margin: 0 auto;
     margin-top: 4vh;
+    background-color: rgb(187, 247, 208);
+    color: rgb(22, 101, 52);
     box-shadow: 0 0 10px 0 rgba(0,0,0,0.2);
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: 1.2em;
 }
-.chat:hover{
-    background: linear-gradient(0deg, #000000b9 10%, #45ad6f);
-    color: white;
-}
+
 
