@@ -1,6 +1,6 @@
 import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
-import { useState, useEffect, useRef } from "react";
-import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline } from 'ionicons/icons';
+import { useState, useEffect } from "react";
+import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline, image } from 'ionicons/icons';
 import axios from 'axios';
 import socket from '../websocket';
 import './Room.css';
@@ -12,21 +12,18 @@ import FullScreen from '../components/Fullscreen';
 const Home: React.FC = () => {
     
     const [currentPlaying, setCurrentPlaying] = useState<any | null>({});
-    const [following, setFollowing] = useState<FollowUserProps[]>([]);
-    const [profile, setProfile] = useState<UserDataProps>();
+    const [profile, setProfile] = useState<any>();
     const [isLoading, setIsLoading] = useState(false);
-    const [player, setPlayer] = useState<any | null>(null);
     const [sliderProgress, setSliderProgress] = useState<string>("0");
     const [messageArray, setMessageArray]= useState<any[]>([])
     const [chatFullscreen, setChatFullscreen] = useState<boolean>(false)
-    const ref = useRef<any>(null)
     const [msg, setMsg] = useState('');
 
     const { roomId } : { roomId : string } = useParams()
 
     const sendMessage = () => {
         console.log(msg)
-        socket.emit('sendMessage', { room: roomId, message: msg })
+        socket.emit('sendMessage', { room: roomId, message: msg, userId: profile?.spotifyId, imageUrl: profile?.imageUrl, userName: profile?.name })
     }
 
     const play = () => {
@@ -40,6 +37,8 @@ const Home: React.FC = () => {
     useEffect(() => {
         socket.connect()
 
+        userUtil.getUser().then((data) => { setProfile(data) })
+
         socket.emit('join', { room: roomId })
 
         // TODO: Add error handling
@@ -48,8 +47,6 @@ const Home: React.FC = () => {
         socket.on('greet', (data) => console.log(data))
 
         socket.on('newMessage', (data) => {
-
-            console.log(data)
 
             setMessageArray([...messageArray, data])
             

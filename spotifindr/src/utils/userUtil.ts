@@ -61,3 +61,8 @@ export const findMatch = async () : Promise<any> => {
         throw new Error('Error sending match');
     }
 }
+
+export const logout = async () : Promise<void> => {
+    await axios.get('/api/logout');
+    window.location.href = '/';
+}

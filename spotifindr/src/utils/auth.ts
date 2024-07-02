@@ -19,3 +19,4 @@ export const loginWithSpotify = async () : Promise<void> => {
         throw new Error('Already logged in');
     }
 }
+
