@@ -169,7 +169,7 @@ ion-icon {
     border-top: solid #84f0b363;
 }
 
-@media screen and (max-height: 710px) {
+/* @media screen and (max-height: 710px) {
     .header {
         display: none;
         margin: 0;
@@ -177,7 +177,7 @@ ion-icon {
     .login-form {
         margin-top: 5vh; 
     }
-}
+} */
 @media screen and (max-width: 1000px) {
     #slogan {
         display: none

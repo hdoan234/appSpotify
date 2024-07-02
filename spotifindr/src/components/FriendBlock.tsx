@@ -11,13 +11,19 @@ const FriendBlock = ({children, url, currentPlaying, ...props} : any) : any => {
     const [progress, setProgress] = useState(currentPlaying?.progress_ms)
 
     useEffect(() => {
-        setProgress(currentPlaying?.progress_ms)
         const interval = setInterval(() => {
-            setProgress(progress + 1000)
+            setProgress((prev : number) => {
+                if (prev >= parseInt(currentPlaying?.item?.duration_ms)) {
+                    return prev
+                }
+                return prev + 1000
+            })
+            
             console.log(progress)
+
         }, 1000)
         return () => clearInterval(interval)
-    }, [progress])
+    }, [currentPlaying])
 
     const timeFormatter = (time: string) : string => {
       return `${Math.floor(parseInt(time) / 1000 / 60) }:${ (Math.floor(parseInt(time) / 1000 % 60) + "").padStart(2, "0") }`
