@@ -54,7 +54,7 @@ const Home: React.FC = () => {
 
         socket.on('update', (data) => {
             console.log(data)
-            setCurrentPlaying(data)
+            setCurrentPlaying(data.roomState)
             setMessageArray(data.roomMessages)
         })
 

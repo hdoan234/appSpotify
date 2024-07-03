@@ -20,6 +20,7 @@ const fullscreen = ({messages, onSubmit, onChange, userSpot, txt } : any) => {
                     <div className="chat-messages">
                         {messages.map((message : any, index: number) => (
                         <div key={index} className={`message ${userSpot == message.userId ? "user" : "other" }`}>
+                            { userSpot != message.userId && (index > 0 ? message.imageUrl != messages[index - 1].imageUrl : true ) && <img className="message-image" src={message.imageUrl} /> }
                             <div className="message-content">{message.message}</div>
                         </div>
                         ))}
