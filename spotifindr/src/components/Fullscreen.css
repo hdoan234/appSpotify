@@ -67,7 +67,10 @@
 
   .message {
     max-width: 80%;
-    height:4vh;
+    min-height: 20px;
+    height: 4vh;
+    max-height: 35px;
+    margin-bottom: 10px;
   }
 
   .message.user {
@@ -81,6 +84,7 @@
     padding: 8px 12px;
     border-radius: 18px;
     background-color: #3a6838;
+    
   }
 
   .message.other .message-content {
@@ -88,8 +92,9 @@
   }
   .message.other{
     align-self: flex-start;
-    text-align: left;
+    text-align: auto;
     width: 100%;
+    
   }
 
   .chat-input {
@@ -114,3 +119,38 @@
     cursor: pointer;
     text-align: center;
   }
+.message-image{
+    height: 3.5vh;
+    width:  auto;
+    border-radius: 50%;
+    margin-bottom: 5px;
+    border: 1px solid #000000;
+    margin-right: 13px;
+    object-fit: cover;
+}
+.has-image {
+    display: inline-flexbox;
+    flex-direction: column;
+    margin-bottom: 11%;
+    align-items: left;
+    justify-content: left;
+    width: 100%;
+}
+
+.has-image.message {
+    width: fit-content;
+
+}
+
+.current-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 30%;
+}
+
+.current-info span {
+    font-size: 1rem;
+    font-weight: lighter;
+    
+}

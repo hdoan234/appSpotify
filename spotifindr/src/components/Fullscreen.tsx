@@ -5,6 +5,13 @@ import React, { useState } from 'react';
 
 const fullscreen = ({messages, onSubmit, onChange, userSpot, txt } : any) => {
     
+    messages = [
+        { userName: "User1", message: "Hello", imageUrl: "https://media.tenor.com/t3dLLNaI50oAAAAM/cat-cats.gif", userId: "afsafsd" },
+        ...messages,
+        { userName: "User1", message: "Hello hoa", imageUrl: "https://media.tenor.com/t3dLLNaI50oAAAAM/cat-cats.gif", userId: "afsafsd" },
+        { userName: "User1", message: "hoa gay", imageUrl: "https://media.tenor.com/t3dLLNaI50oAAAAM/cat-cats.gif", userId: "afsafsd" },
+    ];
+
     return (
         <div className='chatbox-container'>
             <div className="chatbox fullscreen">
@@ -19,8 +26,13 @@ const fullscreen = ({messages, onSubmit, onChange, userSpot, txt } : any) => {
                     
                     <div className="chat-messages">
                         {messages.map((message : any, index: number) => (
-                        <div key={index} className={`message ${userSpot == message.userId ? "user" : "other" }`}>
-                            { userSpot != message.userId && (index > 0 ? message.imageUrl != messages[index - 1].imageUrl : true ) && <img className="message-image" src={message.imageUrl} /> }
+                        <div key={index} className={`${userSpot != message.userId && (index > 0 ? message.imageUrl != messages[index - 1].imageUrl : true) ? "has-image" : ""} message ${userSpot == message.userId ? "user" : "other" }`}>
+                            { userSpot != message.userId && (index > 0 ? message.imageUrl != messages[index - 1].imageUrl : true) && 
+                                <div className="current-info">
+                                    <img className="message-image" src={message.imageUrl} /> 
+                                    <span className="username">{message.userName}</span>
+                                </div>
+                            }
                             <div className="message-content">{message.message}</div>
                         </div>
                         ))}
