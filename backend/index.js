@@ -123,7 +123,8 @@ io.on('connection', async (socket) => {
       roomMap.set(data.room, {
         "owner": spotifyId,
         "IdToUsersMapping": IdToUsersMapping,
-        "UsersToIdMapping": UsersToIdMapping
+        "UsersToIdMapping": UsersToIdMapping,
+        "roomMessages": []
       })
 
     } else if (roomMap.get(data.room)["UsersToIdMapping"].has(spotifyId)) {
@@ -144,7 +145,7 @@ io.on('connection', async (socket) => {
 
     
     const roomState = await roomDataUpdate(ownerId)
-    io.to(data.room).emit('update', roomState)
+    io.to(data.room).emit('update', { roomState, roomMessages: roomMap.get(data.room)["roomMessages"] })
 
     console.log(spotifyId + " joined " + data.room)
 
@@ -184,7 +185,7 @@ io.on('connection', async (socket) => {
       })
     }
 
-    socket.to(data.room).emit('update', ownerCurrentState)
+    socket.to(data.room).emit('update', {roomState: await roomDataUpdate(owner), roomMessages: roomMap.get(data.room)["roomMessages"]})
   })
 
   socket.on('ownerPause', (data) => {
@@ -207,12 +208,12 @@ io.on('connection', async (socket) => {
       })
     }
 
-    socket.to(data.room).emit('update', { "is_playing": false })
+    io.to(data.room).emit('update', {roomState: { "is_playing": false }, roomMessages: roomMap.get(data.room)["roomMessages"]})
   })
 
   socket.on('sendMessage', (data) => {
-    console.log(data)
-    io.to(data.room).emit('newMessage', { userImage: data.userImage, userId: data.userId, message: data.message, userName: data.userName})
+    roomMap.get(data.room)["roomMessages"].push(data)
+    io.to(data.room).emit('newMessage', roomMap.get(data.room)["roomMessages"])
   })
 
   socket.on('disconnect', () => {
