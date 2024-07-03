@@ -17,12 +17,12 @@ const Home: React.FC = () => {
     const [sliderProgress, setSliderProgress] = useState<string>("0");
     const [messageArray, setMessageArray]= useState<any[]>([])
     const [chatFullscreen, setChatFullscreen] = useState<boolean>(false)
-    const [currentMessage, setCurrentMessage] = useState('')
+    const [text, setText] = useState('')
 
     const { roomId } : { roomId : string } = useParams()
 
-    const sendMessage = () => {
-        console.log(currentMessage)
+    const sendMessage = (currentMessage : string) => {
+        console.log()
         socket.emit('sendMessage', { room: roomId, message: currentMessage, userId: profile?.id, imageUrl: profile?.images[0].url, userName: profile?.display_name })
     }
 
@@ -47,14 +47,15 @@ const Home: React.FC = () => {
         socket.on('greet', (data) => console.log(data))
 
         socket.on('newMessage', (data) => {
-            setMessageArray([...messageArray, data])
+            setMessageArray(data)
             console.log("new message received")
-            console.log(messageArray)
+            console.log(data)
         })
 
         socket.on('update', (data) => {
             console.log(data)
             setCurrentPlaying(data)
+            setMessageArray(data.roomMessages)
         })
 
         socket.on('roomDeleted', () => {
@@ -119,8 +120,8 @@ const Home: React.FC = () => {
                     }>
 
                     </div>
-                    { chatFullscreen && <FullScreen onClick={() => sendMessage()} onChange={(e : any) => {
-                        setCurrentMessage(e.target.value)
+                    { chatFullscreen && <FullScreen txt={text} userSpot={profile?.id} messages={messageArray} onSubmit={() => { sendMessage(text); setText("") }} onChange={(e : any) => {
+                        setText(e.target.value);
                     }} /> } 
                 </div>
                 
