@@ -5,13 +5,6 @@ import React, { useState } from 'react';
 
 const fullscreen = ({messages, onSubmit, onChange, userSpot, txt } : any) => {
     
-    messages = [
-        { userName: "User1", message: "Hello", imageUrl: "https://media.tenor.com/t3dLLNaI50oAAAAM/cat-cats.gif", userId: "afsafsd" },
-        ...messages,
-        { userName: "User1", message: "Hello hoa", imageUrl: "https://media.tenor.com/t3dLLNaI50oAAAAM/cat-cats.gif", userId: "afsafsd" },
-        { userName: "User1", message: "hoa gay", imageUrl: "https://media.tenor.com/t3dLLNaI50oAAAAM/cat-cats.gif", userId: "afsafsd" },
-    ];
-
     return (
         <div className='chatbox-container'>
             <div className="chatbox fullscreen">
