@@ -1,18 +1,15 @@
-import { send, text } from 'ionicons/icons';
 import './Fullscreen.css'
-import React, { useState } from 'react';
+
+const fullscreen = ({messages, onSubmit, onChange, userSpot, txt, roomId } : any) => {
 
 
-const fullscreen = ({messages, onSubmit, onChange, userSpot, txt } : any) => {
-    
     return (
         <div className='chatbox-container'>
             <div className="chatbox fullscreen">
                 <div className="chat-container">
                     <div className="chat-header">
                         <div className="user-info">
-                            <div className="avatar"></div>
-                            <span className="username">Group</span>
+                            <span className="username">{ roomId }</span>
                         </div>
                         
                     </div>

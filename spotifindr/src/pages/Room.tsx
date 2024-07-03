@@ -48,8 +48,11 @@ const Home: React.FC = () => {
 
         socket.on('newMessage', (data) => {
             setMessageArray(data)
-            console.log("new message received")
-            console.log(data)
+            scrollToBottom()
+            scrollToBottom()
+            scrollToBottom()
+            scrollToBottom()
+
         })
 
         socket.on('update', (data) => {
@@ -68,6 +71,15 @@ const Home: React.FC = () => {
             socket.disconnect()
         }
     }, [])
+
+    const scrollToBottom = () => {
+        setTimeout(() => {
+            var objDiv = document.querySelector(".chat-messages");
+            if (objDiv) {
+                objDiv.scrollTop = objDiv.scrollHeight;
+            }
+        }, 100)
+    }
 
     document.addEventListener('click', (event) => {
         const excludedSelector = '.chatbox-container';
@@ -115,12 +127,13 @@ const Home: React.FC = () => {
                 <div className='chatbox-container' >
                     <div className="chatbox" onClick={
                         () => {
+                            scrollToBottom()
                             setChatFullscreen(true)
                         }
                     }>
 
                     </div>
-                    { chatFullscreen && <FullScreen txt={text} userSpot={profile?.id} messages={messageArray} onSubmit={() => { sendMessage(text); setText("") }} onChange={(e : any) => {
+                    { chatFullscreen && <FullScreen roomId={roomId} txt={text} userSpot={profile?.id} messages={messageArray} onSubmit={() => { sendMessage(text); setText(""); }} onChange={(e : any) => {
                         setText(e.target.value);
                     }} /> } 
                 </div>

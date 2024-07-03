@@ -120,18 +120,17 @@
     text-align: center;
   }
 .message-image{
-    height: 3.5vh;
-    width:  auto;
+    height: 30px;
+    width:  30px;
     border-radius: 50%;
     margin-bottom: 5px;
-    border: 1px solid #000000;
     margin-right: 13px;
     object-fit: cover;
 }
 .has-image {
     display: inline-flexbox;
     flex-direction: column;
-    margin-bottom: 11%;
+    margin-bottom: 40px;
     align-items: left;
     justify-content: left;
     width: 100%;
@@ -146,11 +145,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 30%;
+    width: 200px;
 }
 
 .current-info span {
     font-size: 1rem;
     font-weight: lighter;
-    
+    display: inline-block;
+    width: 100%;
 }
