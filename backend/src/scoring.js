@@ -81,7 +81,7 @@ const scoring = async (user1, user2) => {
         console.log("--------------------")
 
 
-        return Math.sqrt(score)
+        return score
     } catch (e) {
         console.log(e.message);
         return 999;
