@@ -165,7 +165,7 @@ const Home: React.FC = () => {
                             setChatFullscreen(true)
                         }
                     }>
-                        <div className="chat-messages">
+                        <div className="live-chat-messages">
                             {messageArray.slice(-4).map((message, index) => {
                                 return (
                                     <div key={index} className={`chat-message ${message.userId === profile?.id ? "self" : ""}`}>
