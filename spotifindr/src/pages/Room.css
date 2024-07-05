@@ -3,8 +3,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 5vh;
-    width: 80vw;
+    height: 4vh;
+    width: 60vw;
     background-color: rgba(253, 253, 253, 0.226);
     color: white;
     margin-top: 2vh;
@@ -12,54 +12,52 @@
     margin: auto;
 }
 .room-name{
-    font-size: 15px;
-    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: auto;
-    display: block;
-    justify-content: center;
     display: flex;
+    justify-content: center;
     align-items: center;
 } 
 .room-icon{
+    justify-content: center;
     color: white;
     margin-right:8px;
 }
 .room-name{
-    font-size:1.3rem;
+    font-size:1rem;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: auto;
     display: flex;
     justify-content: center;
-    display: flex;
     align-items: center;
     color: white;
-    height: 2vh;
 }
 span.room-name{
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 400;
-    margin: auto;
+    margin: -2vh;
     display: flex;
     justify-content: center;
-    display: flex;
     align-items: center;
     color: white;
-    height: 2vh;
-    
 }
 .search-icon{
-    color: white;
+    color: rgba(255, 255, 255, 0.589);
     height: 3vh;
-    width:3vw;
+    width:3.5vw;
     right: 0px;
     margin-right: 4%;
-    
+    padding-bottom: 1vh;
+    padding-top: 1vh;
+    cursor: pointer;
+
 }
-.list-icon{
-    color:white;
+.home-icon{
+    color:rgba(255, 255, 255, 0.589);
     height: 3vh;
-    width:3vw;
+    width:3.5vw;
+    padding-bottom: 1vh;
+    padding-top: 1vh;
+    cursor: pointer;
 }
 
 .background{
@@ -121,6 +119,7 @@ span.room-name{
     justify-content: center;
     align-items: center;
     flex-direction: row;
+    margin-bottom: -2vh;
 }
 
 .send-button{
@@ -220,4 +219,35 @@ span.room-name{
     color: white;
     vertical-align: top;
     height:4vh;
+}
+.chat-messages {
+    height: 300px; /* Set a fixed height or use flexbox to manage height */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+
+/* Custom scrollbar for Webkit browsers (Chrome, Safari) */
+.chat-messages::-webkit-scrollbar {
+    width: 10px; /* Width of the entire scrollbar */
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the thumb */
+    border-radius: 10px; /* Rounded corners */
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the thumb when hovered */
+}
+
+/* Custom scrollbar for Firefox */
+@-moz-document url-prefix() {
+    .chat-messages {
+        scrollbar-width: thin;
+        scrollbar-color: #888 #f1f1f1;
+    }
 }

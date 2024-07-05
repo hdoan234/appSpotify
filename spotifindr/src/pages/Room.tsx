@@ -1,6 +1,6 @@
 import { IonButtons, IonContent, IonHeader, IonSpinner, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/react';
 import { useState, useEffect } from "react";
-import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline, image, send } from 'ionicons/icons';
+import { listOutline, playOutline, playSkipBackOutline, playSkipForwardOutline, searchOutline, radioOutline, homeOutline, image, send } from 'ionicons/icons';
 import axios from 'axios';
 import socket from '../websocket';
 import './Room.css';
@@ -34,6 +34,14 @@ const Home: React.FC = () => {
     const pause = () => {
         socket.emit('ownerPause', { room: roomId })
     }
+    const skipBack = () => {
+        socket.emit('ownerSkipBack', { room: roomId })
+    }
+    const skipForward = () => {
+        console.log('Emitting skipForward event');
+        socket.emit('ownerSkipForward', { room: roomId })
+    }
+
     const fetchRoomDetails = async (roomId: string) => {
         try {
             const response = await axios.get(`/localhost:8100/rooms/${roomId}`);
@@ -126,14 +134,14 @@ const Home: React.FC = () => {
         <IonPage>
             <IonContent fullscreen className='background'>
                 <div className="header-icon">
-                    <IonIcon icon={listOutline} className="list-icon"/>
+                    <IonIcon icon={homeOutline} onClick={() => document.location = "/home" } className="home-icon"/>
                     <IonIcon icon={searchOutline} className="search-icon"/>
                         
                 </div>
  
                 <div className="room">
                         <div className='room-name'>
-                        <IonIcon icon={radioOutline} className="room-icon"/>
+                        {/* <IonIcon icon={radioOutline} className="room-icon"/> */}
                         <span className="room-name">{ roomId }</span>
                         </div>
                 </div>
@@ -141,8 +149,8 @@ const Home: React.FC = () => {
                     !currentPlaying || !currentPlaying.is_playing ? <h1 style={{textAlign:"center"}}>Owner is not playing anything</h1> :
                     <div>
                     <div className='cover-artist'>
-                        <img style={{width: "70%", borderRadius: "8%", maxWidth: "400px"}} src={currentPlaying?.item?.album?.images[0]?.url} alt="" />
-                            <p style={{fontSize:"1.2rem", marginTop:"20px"}}>{currentPlaying.item?.name }</p>
+                        <img style={{height: "40vh", borderRadius: "8%", maxWidth: "400px"}} src={currentPlaying?.item?.album?.images[0]?.url} alt="" />
+                            <p style={{fontSize:"1.1rem", marginTop:"20px"}}>{currentPlaying.item?.name }</p>
                                 <p style={{fontSize:"0.8rem",paddingBottom:"10px"}}>{currentPlaying.item?.artists.map((artist: any, index : number) => `${artist.name}${index === currentPlaying.item?.artists.length - 1 ? "" : ", "}`) } </p>
                                 <input className='slider' style={{width: "60%", height:"0.5vh", background: `linear-gradient(90deg, #04AA6D ${sliderProgress}%, white ${sliderProgress}%)`}} readOnly type="range" step="0.1" min="1" max="100" value={sliderProgress} /> 
                             
@@ -150,9 +158,10 @@ const Home: React.FC = () => {
 
 
                     <div className="playing-icons">
-                        <IonIcon icon={playSkipBackOutline} onClick={() => play()} className="back-icon room-button"/>
+                        <IonIcon icon={playSkipBackOutline} onClick={() => skipBack()} className="back-icon room-button"/>
                         <IonIcon icon={playOutline} onClick={() => pause()} className="play-icon room-button"/>
-                        <IonIcon icon={playSkipForwardOutline} className="skip-icon room-button"/> 
+                        <IonIcon icon={playSkipForwardOutline} onClick ={() => skipForward()} className="skip-icon room-button"/>
+
                     </div>
                     
                     
@@ -165,7 +174,19 @@ const Home: React.FC = () => {
                             setChatFullscreen(true)
                         }
                     }>
-                        
+                        <div className="chat-messages">
+                            {messageArray.slice(-4).map((message, index) => {
+                                return (
+                                    <div key={index} className={`chat-message ${message.userId === profile?.id ? "self" : ""}`}>
+                                        <div className="chat-message-content">
+                                            <p className="chat-message-username">{message.userName}:</p>
+                                            <p className="chat-message-text">{message.message}</p>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+
                     </div>
                     { chatFullscreen && <FullScreen roomId={roomId} txt={text} userSpot={profile?.id} messages={messageArray} onSubmit={() => { sendMessage(text); setText(""); }} onChange={(e : any) => {
                         setText(e.target.value);

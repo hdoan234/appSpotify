@@ -155,3 +155,30 @@
     display: block;
     text-align: center;
 }
+.friend-container {
+  --sb-track-color: #4b4e50;
+  --sb-thumb-color: #92d0b1;
+  --sb-size: 5px;
+}
+
+.friend-container ::-webkit-scrollbar {
+  width: var(--sb-size)
+}
+
+.friend-container ::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 2px;
+}
+
+.friend-container ::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 2px;
+  
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color)
+                     var(--sb-track-color);
+  }
+}
