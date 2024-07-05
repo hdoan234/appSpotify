@@ -105,7 +105,7 @@ const Home: React.FC = () => {
             }
           </div>
         </div>
-        <a href="/matching">
+        <a className="find-match" href="/matching">
           <button className="find-match-button">Find your match</button>
         </a>
         {

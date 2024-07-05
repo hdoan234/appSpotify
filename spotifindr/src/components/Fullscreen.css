@@ -26,11 +26,15 @@
     align-items: center;
     padding: 10px;
     background-color: #2c2c2c;
+    color: white;
+    font-size: medium;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 
   .user-info {
     display: flex;
     align-items: center;
+    padding-left: 10px;
   }
 
   .avatar {

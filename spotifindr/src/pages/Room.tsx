@@ -18,6 +18,7 @@ const Home: React.FC = () => {
     const [messageArray, setMessageArray]= useState<any[]>([])
     const [chatFullscreen, setChatFullscreen] = useState<boolean>(false)
     const [text, setText] = useState('')
+    const [roomName, setRoomName] = useState<string>('');
 
     const { roomId } : { roomId : string } = useParams()
 
@@ -33,6 +34,15 @@ const Home: React.FC = () => {
     const pause = () => {
         socket.emit('ownerPause', { room: roomId })
     }
+    const fetchRoomDetails = async (roomId: string) => {
+        try {
+            const response = await axios.get(`/localhost:8100/rooms/${roomId}`);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching room details:", error);
+            return null;
+        }
+    };    
 
     useEffect(() => {
         socket.connect()
@@ -40,6 +50,12 @@ const Home: React.FC = () => {
         userUtil.getUser().then((data) => { setProfile(data); console.log(data) })
 
         socket.emit('join', { room: roomId })
+
+        fetchRoomDetails(roomId).then((roomDetails) => {
+            if (roomDetails) {
+                setRoomName(roomDetails.name); 
+            }
+        });
 
         // TODO: Add error handling
         socket.on('unauthorized', (error) => alert(error))
@@ -70,7 +86,24 @@ const Home: React.FC = () => {
         return () => {
             socket.disconnect()
         }
-    }, [])
+    }, [roomId])
+    useEffect(() => {
+        if (!currentPlaying?.is_playing || !currentPlaying?.item) return;
+
+        const interval = setInterval(() => {
+            setCurrentPlaying((prevPlaying:any) => {
+                if (!prevPlaying) return prevPlaying;
+
+                const newProgress = prevPlaying.progress_ms + 100;
+                const newSliderProgress = (newProgress / prevPlaying.item.duration_ms) * 100;
+                setSliderProgress(newSliderProgress.toFixed(2));
+
+                return { ...prevPlaying, progress_ms: newProgress };
+            });
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, [currentPlaying]);
 
     const scrollToBottom = () => {
         setTimeout(() => {
@@ -86,8 +119,8 @@ const Home: React.FC = () => {
         if (event.target instanceof HTMLElement && !event.target.closest(excludedSelector)) {
             setChatFullscreen(false)
         }
-        
     });
+    
 
     return(
         <IonPage>
@@ -95,12 +128,13 @@ const Home: React.FC = () => {
                 <div className="header-icon">
                     <IonIcon icon={listOutline} className="list-icon"/>
                     <IonIcon icon={searchOutline} className="search-icon"/>
+                        
                 </div>
  
                 <div className="room">
                         <div className='room-name'>
                         <IonIcon icon={radioOutline} className="room-icon"/>
-                        <p>Room Name</p>
+                        <span className="room-name">{ roomId }</span>
                         </div>
                 </div>
                 {
@@ -131,7 +165,19 @@ const Home: React.FC = () => {
                             setChatFullscreen(true)
                         }
                     }>
-
+                        <div className="chat-messages">
+                            {messageArray.slice(-4).map((message, index) => {
+                                return (
+                                    <div key={index} className={`chat-message ${message.userId === profile?.id ? "self" : ""}`}>
+                                        <div className="chat-message-content">
+                                            <p className="chat-message-username">{message.userName}:</p>
+                                            <p className="chat-message-text">{message.message}</p>
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                        
                     </div>
                     { chatFullscreen && <FullScreen roomId={roomId} txt={text} userSpot={profile?.id} messages={messageArray} onSubmit={() => { sendMessage(text); setText(""); }} onChange={(e : any) => {
                         setText(e.target.value);
