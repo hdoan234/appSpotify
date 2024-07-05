@@ -165,18 +165,6 @@ const Home: React.FC = () => {
                             setChatFullscreen(true)
                         }
                     }>
-                        <div className="chat-messages">
-                            {messageArray.slice(-4).map((message, index) => {
-                                return (
-                                    <div key={index} className={`chat-message ${message.userId === profile?.id ? "self" : ""}`}>
-                                        <div className="chat-message-content">
-                                            <p className="chat-message-username">{message.userName}:</p>
-                                            <p className="chat-message-text">{message.message}</p>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
                         
                     </div>
                     { chatFullscreen && <FullScreen roomId={roomId} txt={text} userSpot={profile?.id} messages={messageArray} onSubmit={() => { sendMessage(text); setText(""); }} onChange={(e : any) => {
